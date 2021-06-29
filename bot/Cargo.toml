@@ -1,5 +1,5 @@
 [package]
-name = "bot"
+name = "shinchoku_chan"
 version = "0.1.0"
 authors = ["jpnykw <jpnykw@gmail.com>"]
 edition = "2018"
