@@ -1,4 +1,5 @@
 use std::env;
+
 use serenity::{
     prelude::*,
     model::{channel::Message, gateway::Ready},
@@ -14,6 +15,7 @@ struct Handler {
     prefix: String
 }
 
+// Botがコマンドを解釈して実行する処理
 impl EventHandler for Handler {
     fn message(&self, ctx: Context, msg: Message) {
         let content = &msg.content;
@@ -25,7 +27,7 @@ impl EventHandler for Handler {
 
             match command {
                 "ping" => ping(&ctx, &msg),
-                "記録" => record(&ctx, &msg),
+                "記録" => record(&ctx, &msg, args),
                 _ => {
                     if let Err(why) = msg.channel_id.say(&ctx.http, &format!("Unknown command `{}`", command)) {
                         println!("Error sending message: {:?}", why);
