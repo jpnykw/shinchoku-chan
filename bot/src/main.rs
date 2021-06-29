@@ -1,12 +1,13 @@
 use std::env;
 use serenity::{
-    model::{channel::Message, gateway::Ready},
     prelude::*,
+    model::{channel::Message, gateway::Ready},
 };
 
 mod commands;
 use commands::{
     utils::*,
+    record::*,
 };
 
 struct Handler {
@@ -24,6 +25,7 @@ impl EventHandler for Handler {
 
             match command {
                 "ping" => ping(&ctx, &msg),
+                "記録" => record(&ctx, &msg),
                 _ => {
                     if let Err(why) = msg.channel_id.say(&ctx.http, &format!("Unknown command `{}`", command)) {
                         println!("Error sending message: {:?}", why);
