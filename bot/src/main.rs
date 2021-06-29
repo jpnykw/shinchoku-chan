@@ -27,9 +27,9 @@ impl EventHandler for Handler {
 
             match command {
                 "ping" => ping(&ctx, &msg),
-                "記録" => record(&ctx, &msg, args),
+                "記録" | "感想" | "今日の感想" => record(&ctx, &msg, args),
                 _ => {
-                    if let Err(why) = msg.channel_id.say(&ctx.http, &format!("Unknown command `{}`", command)) {
+                    if let Err(why) = msg.channel_id.say(&ctx.http, &format!("`{}` ってなんのこと？", command)) {
                         println!("Error sending message: {:?}", why);
                     }
                 },

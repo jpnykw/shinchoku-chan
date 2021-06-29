@@ -4,6 +4,6 @@ use serenity::{
 };
 
 pub fn ping(ctx: &Context, msg: &Message) {
-    msg.channel_id.say(ctx, "Pong!");
+    msg.channel_id.say(ctx, "ぽん！");
 }
 
