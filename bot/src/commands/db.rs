@@ -25,7 +25,7 @@ pub fn post(ctx: &Context, msg: &Message, args: Vec<&str>) {
 }
 
 pub fn show(ctx: &Context, msg: &Message) {
-    use schema::posts::dsl::{posts};
+    use schema::posts::dsl::{date as post_date, posts};
     use diesel::prelude::*;
     use self::models::*;
 
@@ -35,12 +35,14 @@ pub fn show(ctx: &Context, msg: &Message) {
     // 10件を取得
     // TODO: 日時順にソートする
     let results = posts
+        .order_by(post_date.desc())
         .limit(10)
         .load::<Post>(&connection)
         .expect("Error loading posts");
 
     // テーブルのデータをコード表示にする
-    let mut response = format!("```\n| {:<19} | {:<32} | {}", "Date(UTC)", "User", "Content");
+    let mut response = String::from("```\n最新の10件を取得しました\n");
+    response = format!("{}\n| {:<19} | {:<32} | {}", response, "Date(UTC)", "User", "Content");
     response = format!("{}\n| {:<19} | {:<32} | {}", response, "-", "-", "-");
 
     for post in results {
@@ -57,7 +59,7 @@ pub fn show(ctx: &Context, msg: &Message) {
         response = format!("{}\n| {:<19} | {:<32} | {}", response, date, name, content);
     }
 
-    response = format!("{}\n```", response);
+    response = format!("{}\n```\nさいと：https://shinchoku-chan-viewer.herokuapp.com/", response);
     msg.channel_id.say(ctx, "テーブルの中身を表示するよ！");
     msg.channel_id.say(ctx, &response);
 }
