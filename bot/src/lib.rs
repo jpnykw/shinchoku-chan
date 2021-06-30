@@ -31,5 +31,4 @@ pub fn create_post(conn: &MysqlConnection, name: &str, content: &str) -> Post {
         .expect("Error saving new post");
 
     posts.order(id.desc()).first(conn).unwrap()
-    // todo!()
 }
