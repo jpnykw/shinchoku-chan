@@ -1,0 +1,1 @@
+web: node ./viewer/src/index.js
