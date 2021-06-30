@@ -6,7 +6,7 @@ pub struct Post {
     pub id: i32,
     pub name: String,
     pub content: String,
-    pub date: Option<chrono::NaiveDateTime>,
+    pub date: Option<NaiveDateTime>,
 }
 
 #[derive(Insertable)]

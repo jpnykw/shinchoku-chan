@@ -3,7 +3,6 @@ table! {
         id -> Integer,
         name -> Varchar,
         content -> Text,
-        date -> Nullable<Timestamp>,
+        date -> Nullable<Datetime>,
     }
 }
-

@@ -4,7 +4,6 @@ extern crate dotenv;
 
 use diesel::prelude::*;
 use dotenv::dotenv;
-use chrono::Utc;
 use std::env;
 
 pub mod models;
@@ -20,9 +19,10 @@ pub fn establish_connection() -> MysqlConnection {
 
 // DBにデータを書き込むための処理
 pub fn create_post(conn: &MysqlConnection, name: &str, content: &str) -> Post {
-    use schema::posts::dsl::{ id, posts };
+    use schema::posts::dsl::{id, posts};
+    use chrono::Utc;
 
-    let date = chrono::Utc::now().naive_utc();
+    let date = Utc::now().naive_utc();
     let new_post = NewPost { name, content, date };
 
     diesel::insert_into(posts)
@@ -31,4 +31,5 @@ pub fn create_post(conn: &MysqlConnection, name: &str, content: &str) -> Post {
         .expect("Error saving new post");
 
     posts.order(id.desc()).first(conn).unwrap()
+    // todo!()
 }
