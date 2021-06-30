@@ -8,7 +8,7 @@ use serenity::{
 mod commands;
 use commands::{
     utils::*,
-    record::*,
+    db::*,
 };
 
 struct Handler {
