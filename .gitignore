@@ -17,3 +17,6 @@ Cargo.lock
 
 # Packages for npm
 node_modules
+
+# Dump files of MySQL
+*dump
