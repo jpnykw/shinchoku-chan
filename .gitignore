@@ -14,3 +14,6 @@ Cargo.lock
 
 # Configuration file for diesel
 .env
+
+# Packages for npm
+node_modules
