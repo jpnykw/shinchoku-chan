@@ -10,6 +10,7 @@ use serenity::{
 
 // DB に接続して投稿された内容を記録する
 pub fn post(ctx: &Context, msg: &Message, args: Vec<&str>) {
+    msg.channel_id.say(ctx, "ちょっとだけ待ってね…");
     let connection = establish_connection();
 
     // TODO: 内容が空だったりした場合に処理を変える
@@ -24,14 +25,15 @@ pub fn post(ctx: &Context, msg: &Message, args: Vec<&str>) {
 }
 
 pub fn show(ctx: &Context, msg: &Message) {
-    // use self::schema::posts::dsl::*;
     use schema::posts::dsl::{posts};
     use diesel::prelude::*;
     use self::models::*;
 
-    // TODO: 日時順にソートする
+    msg.channel_id.say(ctx, "ちょっとだけ待ってね…");
     let connection = establish_connection();
+
     // 10件を取得
+    // TODO: 日時順にソートする
     let results = posts
         .limit(10)
         .load::<Post>(&connection)
