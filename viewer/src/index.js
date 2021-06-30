@@ -5,7 +5,7 @@ const express = require('express');
 const mysql = require('mysql');
 const app = express();
 
-const connection = mysql.createConnection({
+const pool = mysql.createPool({
   host: 'us-cdbr-east-04.cleardb.com',
   user: 'b529d6a4aa7138',
   database: 'heroku_29a6a27e7069b46',
@@ -13,15 +13,17 @@ const connection = mysql.createConnection({
 });
 
 app.get('/', (_, response) => {
-  connection.query('SELECT * FROM posts', (_, result) => {
-    let text = 'OK:';
+  pool.getConnection((_, connection) => {
+    connection.query('SELECT * FROM posts', (_, result) => {
+      let text = 'OK:';
 
-    for (const row_data_packet of result) {
-      const { id, name, content, date } = row_data_packet;
-      text = `${text}<p>(#${id}) ${name} at ${date} : ${content}</p>`;
-    }
+      for (const row_data_packet of result) {
+        const { id, name, content, date } = row_data_packet;
+        text = `${text}<p>(#${id}) ${name} at ${date} : ${content}</p>`;
+      }
 
-    response.send(text);
+      response.send(text);
+    });
   });
 });
 
