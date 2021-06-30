@@ -14,7 +14,14 @@ const connection = mysql.createConnection({
 
 app.get('/', (_, response) => {
   connection.query('SELECT * FROM posts', (_, result) => {
-    response.send(`OK:<br>${result}`);
+    let text = 'OK:';
+
+    for (const row_data_packet of result) {
+      const { id, name, content, date } = row_data_packet;
+      text = `${text}<p>(#${id}) ${name} at ${date} : ${content}</p>`;
+    }
+
+    response.send(text);
   });
 });
 
