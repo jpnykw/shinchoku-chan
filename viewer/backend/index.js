@@ -21,7 +21,7 @@ app.use(express.static(path.join(__dirname, '../frontend/build')));
 // テーブルの値を全て取得するためのエンドポイント
 app.get('/api', (_, response) => {
   pool.getConnection((_, connection) => {
-    connection.query('SELECT * FROM posts', (_, result) => {
+    connection.query('SELECT * FROM posts ORDER BY date DESC LIMIT 50', (_, result) => {
       response.json({ result: JSON.stringify(result) });
     });
   });
