@@ -1,9 +1,9 @@
 {
   "name": "shinchoku-chan-viewer",
   "version": "1.0.0",
-  "main": "./viewer/src/index.js",
+  "main": "./viewer/backend/index.js",
   "scripts": {
-    "start": "node ./viewer/src/index.js"
+    "start": "node ./viewer/backend/index.js"
  },
   "dependencies": {
     "express": "^4.17.1",
