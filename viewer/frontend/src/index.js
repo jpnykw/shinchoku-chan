@@ -5,9 +5,11 @@ import Main from './components/Main';
 import './index.css';
 
 ReactDOM.render(
-  <React.StrictMode>
+  <>
+  {/* // <React.StrictMode> */}
     <Main />
-  </React.StrictMode>,
+  {/* // </React.StrictMode>, */}
+  </>,
   document.getElementById('root')
 );
 
