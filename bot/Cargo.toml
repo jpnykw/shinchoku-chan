@@ -11,4 +11,4 @@ serenity = { version = "0.7" }
 diesel = { version = "1.4.0", features = ["mysql", "chrono"] }
 chrono = { version = "0.4", features = ["serde"] }
 dotenv = "0.10"
-
+regex = "0.2"

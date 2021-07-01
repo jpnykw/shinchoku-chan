@@ -29,7 +29,7 @@ impl EventHandler for Handler {
                 "ping" => ping(&ctx, &msg),
                 "記録" | "感想" | "進捗" | "今日の感想" => post(&ctx, &msg, args),
                 "表示" => show(&ctx, &msg),
-                "heroku" | "へろく" => heroku_ps(&ctx, &msg),
+                "heroku" | "へろく" => heroku_ps(&ctx, &msg, args),
                 _ => {
                     if let Err(why) = msg.channel_id.say(&ctx.http, &format!("`{}` ってなんのこと？", command)) {
                         println!("Error sending message: {:?}", why);
