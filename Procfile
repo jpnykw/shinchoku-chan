@@ -1,1 +1,1 @@
-web: node ./viewer/src/index.js
+web: node ./viewer/backend/index.js
