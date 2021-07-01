@@ -51,9 +51,13 @@ app.get('/api', (request, response) => {
 
         case 'order':
           // 対象のカラム、ソート順、の順番で受け取る
-          // 例 ?order=name,desc
+          // 例 ?order=name,DESC
           data = request.query[key].split(',');
-          query.mysql = `${query.mysql} ORDER BY ${data[0]} ${data[1] === 'desc' ? 'DESC' : 'ASC'}`;
+          query.mysql = `${query.mysql} ORDER BY ${data[0]} ${data[1]}`;
+          break;
+
+        case 'limit':
+          query.mysql = `${query.mysql} LIMIT ${request.query[key]}`;
           break;
       }
     }
