@@ -1,7 +1,6 @@
-import './App.css';
 import {useState, useEffect} from 'react';
 
-const App = () => {
+const Main = () => {
   const [progress, setProgress] = useState('');
 
   const fetch_posts_from_db = () => {
@@ -44,4 +43,4 @@ const App = () => {
   );
 }
 
-export default App;
+export default Main;
