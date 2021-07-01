@@ -34,8 +34,8 @@ const useStyles = makeStyles((theme) => ({
 const Main = () => {
   const [progress, setProgress] = useState('');
 
-  const fetch_posts_from_db = () => {
-    fetch('/api')
+  const fetch_posts_from_db = (query = '') => {
+    fetch(`/api${query}`)
     .then((response) => response.json())
     .then((data) => setProgress(data.result));
   }
@@ -51,7 +51,7 @@ const Main = () => {
     <>
       <Container>
         <Typography variant="h4" className={classes.title}>💪進捗リスト💪</Typography>
-        <Button variant="outlined" color="secondary" onClick={fetch_posts_from_db}>データを取得する</Button>
+        <Button variant="outlined" color="secondary" onClick={() => fetch_posts_from_db()}>データを取得する</Button>
       </Container>
 
       {/* <Container className={classes.tableContainer}> */}
