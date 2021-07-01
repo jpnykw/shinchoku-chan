@@ -17,22 +17,29 @@ const App = () => {
 
   return (
     <div className="App">
-      <h1>進捗</h1>
+      <h1>💪進捗リスト💪</h1>
       <button onClick={fetch_posts_from_db}>データを取得する</button>
-      <div>
-        {
-          (progress === '' ? [] : JSON.parse(progress)).map((row_data_packet, key) => {
-            const { name, content, date } = row_data_packet;
-            return (
-              <div key={key}>
-                <span>{ name }</span>
-                <span>at { date }</span>
-                <span>: { content }</span>
-              </div>
-            )
-          })
-        }
-      </div>
+      <table>
+        <tbody>
+          <tr>
+            <th>ユーザー</th>
+            <th>日時</th>
+            <th>内容</th>
+          </tr>
+          {
+            (progress === '' ? [] : JSON.parse(progress)).map((row_data_packet, key) => {
+              const { name, content, date } = row_data_packet;
+              return (
+                <tr key={key}>
+                  <td>{ name }</td>
+                  <td>{ date }</td>
+                  <td>{ content }</td>
+                </tr>
+              )
+            })
+          }
+        </tbody>
+      </table>
     </div>
   );
 }
