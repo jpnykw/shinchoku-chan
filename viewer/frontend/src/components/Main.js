@@ -43,32 +43,42 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Main = () => {
+  const [fetchDisabled, setFetchDisabled] = useState(false);
   const [progress, setProgress] = useState('');
-  const [order, setOrder] = useState('');
+  const [orderBy, setOrderBy] = useState('date');
+  const [order, setOrder] = useState('DESC');
 
-  const handleChange = (event) => {
+
+  const handleOrderByChange = (event) => {
+    setOrderBy(event.target.value);
+  }
+
+  const handleOrderChange = (event) => {
     setOrder(event.target.value);
-    console.log('順序', event.target.value);
   };
 
   const fetch_posts_from_db = () => {
+    if (!fetchDisabled) setFetchDisabled(true);
+
     let query = '';
     for (const column_name of ['name', 'limit']) {
       let prefix = query === '' ? '?' : '&';
       if (column_name === 'limit') {
-        query = `${query}${prefix}order=date,${order}`;
+        query = `${query}${prefix}order=${orderBy},${order}`;
         prefix = '&';
       }
 
       const column_value = document.querySelector(`#${column_name}`).value;
-      if (column_value !== '') query = `${query}${prefix}${column_name}=${column_value}`;
+      if (column_value !== '' && column_value !== '*') query = `${query}${prefix}${column_name}=${column_value}`;
     }
-
-    console.log('query', query);
 
     fetch(`/api${query}`)
     .then((response) => response.json())
-    .then((data) => setProgress(data.result));
+    .then((data) => {
+      setProgress(data.result);
+      // 連打してサーバーへの過度なアクセスを防ぐ為に 2.5 秒のクールダウンを発生させる
+      setTimeout(() => setFetchDisabled(false), 2500);
+    });
   }
 
   useEffect(() => {
@@ -84,22 +94,39 @@ const Main = () => {
         <Typography variant="h5" className={classes.title}>💪進捗リスト💪</Typography>
 
         <Container className={`${classes.margin} ${classes.properties}`}>
-          <TextField id="limit" label="表示件数" defaultValue={10} autoComplete="off" />
+          <TextField id="limit" label="表示件数" type="number" placeholder="全件" defaultValue={100} autoComplete="off" />
         </Container>
 
         <Container className={`${classes.margin} ${classes.properties}`}>
-          <TextField id="name" label="ユーザー名" autoComplete="off" />
+          <TextField id="name" label="ユーザー名" placeholder="全員" defaultValue="*" autoComplete="off" />
         </Container>
 
         <Container className={`${classes.margin} ${classes.properties}`}>
           <FormControl className={`${classes.margin} ${classes.formControl}`}>
-            <InputLabel id="demo-simple-select-label">ソート順</InputLabel>
+            <InputLabel id="order-by-select">ソートする値</InputLabel>
             <Select
-              labelId="demo-simple-select-label"
-              id="demo-simple-select"
+              labelId="order-by-select"
+              id="order-by-select"
+              value={orderBy}
+              defaultValue="date"
+              onChange={handleOrderByChange}
+            >
+              <MenuItem value="date">日付</MenuItem>
+              <MenuItem value="name">名前</MenuItem>
+              <MenuItem value="content">内容</MenuItem>
+            </Select>
+          </FormControl>
+        </Container>
+
+        <Container className={`${classes.margin} ${classes.properties}`}>
+          <FormControl className={`${classes.margin} ${classes.formControl}`}>
+            <InputLabel id="order-select">ソート順</InputLabel>
+            <Select
+              labelId="order-select"
+              id="order-select"
               value={order}
               defaultValue="ASC"
-              onChange={handleChange}
+              onChange={handleOrderChange}
             >
               <MenuItem value="ASC">昇順</MenuItem>
               <MenuItem value="DESC">降順</MenuItem>
@@ -112,6 +139,7 @@ const Main = () => {
           color="secondary"
           onClick={fetch_posts_from_db}
           className={classes.margin}
+          disabled={fetchDisabled}
         >
           データを取得する
         </Button>
