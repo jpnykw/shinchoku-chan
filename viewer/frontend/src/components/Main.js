@@ -28,17 +28,17 @@ const useStyles = makeStyles((theme) => ({
     marginBottom: theme.spacing(3),
   },
   tableGrid: {
-    marginTop: theme.spacing(3),
+    marginTop: theme.spacing(2),
   },
   properties: {
-    width: 200,
+    width: '80%',
   },
   formControl: {
-    width: 152,
+    width: '80%',
   },
   margin: {
-    marginTop: theme.spacing(1),
-    marginBottom: theme.spacing(1),
+    marginTop: theme.spacing(2),
+    marginBottom: theme.spacing(2),
   }
 }));
 
@@ -47,7 +47,6 @@ const Main = () => {
   const [progress, setProgress] = useState('');
   const [orderBy, setOrderBy] = useState('date');
   const [order, setOrder] = useState('DESC');
-
 
   const handleOrderByChange = (event) => {
     setOrderBy(event.target.value);
@@ -91,52 +90,70 @@ const Main = () => {
   return (
     <>
       <Container>
-        <Typography variant="h5" className={classes.title}>💪進捗リスト💪</Typography>
+        <Typography variant='h5' className={classes.title}>💪進捗リスト💪</Typography>
 
-        <Container className={`${classes.margin} ${classes.properties}`}>
-          <TextField id="limit" label="表示件数" type="number" placeholder="全件" defaultValue={100} autoComplete="off" />
-        </Container>
+        <Grid container justify='center' className={classes.margin}>
+          <Grid item xs={3}>
+            <TextField
+              id='limit'
+              label='表示件数'
+              type='number'
+              placeholder='全件'
+              defaultValue={100}
+              autoComplete='off'
+              className={classes.properties}
+            />
+          </Grid>
+          <Grid item xs={3}>
+            <TextField
+              id='name'
+              label='ユーザー名'
+              placeholder='全員'
+              defaultValue='*'
+              autoComplete='off'
+              className={classes.properties}
+            />
+          </Grid>
+        </Grid>
 
-        <Container className={`${classes.margin} ${classes.properties}`}>
-          <TextField id="name" label="ユーザー名" placeholder="全員" defaultValue="*" autoComplete="off" />
-        </Container>
+        <Grid container justify='center' className={classes.margin}>
+          <Grid item xs={3}>
+            <FormControl className={classes.formControl}>
+              <InputLabel id='order-by-select'>ソートする値</InputLabel>
+              <Select
+                labelId='order-by-select'
+                id='order-by-select'
+                value={orderBy}
+                defaultValue='date'
+                onChange={handleOrderByChange}
+              >
+                <MenuItem value='date'>日付</MenuItem>
+                <MenuItem value='name'>名前</MenuItem>
+                <MenuItem value='content'>内容</MenuItem>
+              </Select>
+            </FormControl>
+          </Grid>
 
-        <Container className={`${classes.margin} ${classes.properties}`}>
-          <FormControl className={`${classes.margin} ${classes.formControl}`}>
-            <InputLabel id="order-by-select">ソートする値</InputLabel>
-            <Select
-              labelId="order-by-select"
-              id="order-by-select"
-              value={orderBy}
-              defaultValue="date"
-              onChange={handleOrderByChange}
-            >
-              <MenuItem value="date">日付</MenuItem>
-              <MenuItem value="name">名前</MenuItem>
-              <MenuItem value="content">内容</MenuItem>
-            </Select>
-          </FormControl>
-        </Container>
-
-        <Container className={`${classes.margin} ${classes.properties}`}>
-          <FormControl className={`${classes.margin} ${classes.formControl}`}>
-            <InputLabel id="order-select">ソート順</InputLabel>
-            <Select
-              labelId="order-select"
-              id="order-select"
-              value={order}
-              defaultValue="ASC"
-              onChange={handleOrderChange}
-            >
-              <MenuItem value="ASC">昇順</MenuItem>
-              <MenuItem value="DESC">降順</MenuItem>
-            </Select>
-          </FormControl>
-        </Container>
+          <Grid item xs={3}>
+            <FormControl className={classes.formControl}>
+              <InputLabel id='order-select'>ソート順</InputLabel>
+              <Select
+                labelId='order-select'
+                id='order-select'
+                value={order}
+                defaultValue='ASC'
+                onChange={handleOrderChange}
+              >
+                <MenuItem value='ASC'>昇順</MenuItem>
+                <MenuItem value='DESC'>降順</MenuItem>
+              </Select>
+            </FormControl>
+          </Grid>
+        </Grid>
 
         <Button
-          variant="outlined"
-          color="secondary"
+          variant='outlined'
+          color='secondary'
           onClick={fetch_posts_from_db}
           className={classes.margin}
           disabled={fetchDisabled}
@@ -145,30 +162,41 @@ const Main = () => {
         </Button>
       </Container>
 
-      <Grid container justify = "center" className={classes.tableGrid}>
-        <TableContainer component={Paper}>
-          <Table className={classes.table} aria-label="simple table">
-            <TableHead>
-              <TableRow>
-                <TableCell>ユーザー</TableCell>
-                <TableCell>投稿日時</TableCell>
-                <TableCell>投稿内容</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {(progress === '' ? [] : JSON.parse(progress)).map((row_data_packet, key) => {
-                const { name, content, date } = row_data_packet;
-                return (
-                  <TableRow key={key}>
-                    <TableCell>{ name }</TableCell>
-                    <TableCell>{ date }</TableCell>
-                    <TableCell>{ content }</TableCell>
-                  </TableRow>
-                )
-              })}
-            </TableBody>
-          </Table>
-        </TableContainer>
+      <Grid container justify = 'center' className={classes.tableGrid}>
+        {
+          progress === '' || JSON.parse(progress).length === 0 ?
+            (
+              <Typography>
+                {progress === '' ? 'データを取得するボタンを押してね' : 'データが見つからないよ！'}
+              </Typography>
+            )
+          :
+            (
+              <TableContainer component={Paper}>
+                <Table className={classes.table} aria-label='simple table'>
+                  <TableHead>
+                    <TableRow>
+                      <TableCell>ユーザー</TableCell>
+                      <TableCell>投稿日時</TableCell>
+                      <TableCell>投稿内容</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {JSON.parse(progress).map((row_data_packet, key) => {
+                      const { name, content, date } = row_data_packet;
+                      return (
+                        <TableRow key={key}>
+                          <TableCell>{ name }</TableCell>
+                          <TableCell>{ date }</TableCell>
+                          <TableCell>{ content }</TableCell>
+                        </TableRow>
+                      );
+                    })}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            )
+        }
       </Grid>
     </>
   );

@@ -66,6 +66,7 @@ app.get('/api', (request, response) => {
   pool.getConnection((_, connection) => {
     connection.query(query.mysql, (error, result) => {
       if (error) {
+        response.json({ result: [] });
         console.log(error);
         return;
       }
