@@ -5,6 +5,7 @@ import Button from '../components/Button.js';
 import Container from '../components/Container.js';
 import FormControl from '../components/FormControl.js';
 import InputLabel from '../components/InputLabel.js';
+import MenuItem from '../components/MenuItem.js';
 import Select from '../components/Select.js';
 import Table from '../components/Table.js';
 import TableBody from '../components/TableBody.js';
@@ -15,7 +16,6 @@ import TableRow from '../components/TableRow.js';
 import TextField from '../components/TextField.js';
 import Typography from '../components/Typography.js';
 
-import MenuItem from '@material-ui/core/MenuItem';
 import Grid from '@material-ui/core/Grid';
 
 const useStyles = makeStyles((theme) => ({
