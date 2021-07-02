@@ -7,9 +7,9 @@ import InputLabel from '../components/InputLabel.js';
 import Table from '../components/Table.js';
 import TableBody from '../components/TableBody.js';
 import TableCell from '../components/TableCell.js';
+import TableContainer from '../components/TableContainer.js';
 import Typography from '../components/Typography.js';
 
-import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import TextField from '@material-ui/core/TextField';
