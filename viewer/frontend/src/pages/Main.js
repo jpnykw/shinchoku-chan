@@ -2,11 +2,11 @@ import { useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 
 import Button from '../components/Button.js';
-import InputLabel from '../components/InputLabel.js';
-import Typography from '../components/Typography.js';
 import Container from '../components/Container.js';
+import InputLabel from '../components/InputLabel.js';
+import Table from '../components/Table.js';
+import Typography from '../components/Typography.js';
 
-import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableContainer from '@material-ui/core/TableContainer';
