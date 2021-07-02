@@ -222,7 +222,14 @@ const Main = () => {
                     {JSON.parse(progress).map((row_data_packet, key) => {
                       const { name, content, date } = row_data_packet;
                       return (
-                        <TableRow key={key}>
+                        <TableRow
+                          style={
+                            key % 2 === 0 ? 
+                            { background : '#f7fafc' } :
+                            { background : 'white' }
+                          }
+                          key={key}
+                        >
                           <TableCell>{ name }</TableCell>
                           <TableCell>{ utc_to_jst(date) }</TableCell>
                           <TableCell>{ content }</TableCell>
