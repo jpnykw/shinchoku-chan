@@ -49,9 +49,12 @@ const Main = () => {
   const [orderBy, setOrderBy] = useState('date');
   const [order, setOrder] = useState('DESC');
   const [error, setError] = useState(false);
+  const [item, setItem] = useState(['古い順', '新しい順']);
 
   const handleOrderByChange = (event) => {
     setOrderBy(event.target.value);
+    if (event.target.value === 'date') setItem(['古い順', '新しい順']);
+    else setItem(['50音順 (A~Z)', '50音順 (Z~A)']);
   }
 
   const handleOrderChange = (event) => {
@@ -148,8 +151,8 @@ const Main = () => {
                 defaultValue='ASC'
                 onChange={handleOrderChange}
               >
-                <MenuItem value='ASC'>古い順</MenuItem>
-                <MenuItem value='DESC'>新しい順</MenuItem>
+                <MenuItem value='ASC'>{item[0]}</MenuItem>
+                <MenuItem value='DESC'>{item[1]}</MenuItem>
               </Select>
             </FormControl>
           </Grid>
