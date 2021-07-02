@@ -8,9 +8,9 @@ import Table from '../components/Table.js';
 import TableBody from '../components/TableBody.js';
 import TableCell from '../components/TableCell.js';
 import TableContainer from '../components/TableContainer.js';
+import TableHead from '../components/TableHead.js';
 import Typography from '../components/Typography.js';
 
-import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import TextField from '@material-ui/core/TextField';
 import FormControl from '@material-ui/core/FormControl';
