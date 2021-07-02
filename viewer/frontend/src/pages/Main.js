@@ -148,8 +148,8 @@ const Main = () => {
                 defaultValue='ASC'
                 onChange={handleOrderChange}
               >
-                <MenuItem value='ASC'>昇順</MenuItem>
-                <MenuItem value='DESC'>降順</MenuItem>
+                <MenuItem value='ASC'>古い順</MenuItem>
+                <MenuItem value='DESC'>新しい順</MenuItem>
               </Select>
             </FormControl>
           </Grid>
@@ -171,7 +171,7 @@ const Main = () => {
           error || progress === '' || JSON.parse(progress).length === 0 ?
             (
               <Typography>
-                {error ? '使えない値が入力されているよ' : progress === '' ? 'データを取得するボタンを押してね' : 'データが見つからないよ！'}
+                {error ? '使えない値が入力されているよ' : progress === '' ? 'データを取得するボタンを押してね' : 'データが見つからないよ'}
               </Typography>
             )
           :
@@ -181,7 +181,7 @@ const Main = () => {
                   <TableHead>
                     <TableRow>
                       <TableCell>ユーザー</TableCell>
-                      <TableCell>投稿日時</TableCell>
+                      <TableCell>投稿日時(UTC)</TableCell>
                       <TableCell>投稿内容</TableCell>
                     </TableRow>
                   </TableHead>
