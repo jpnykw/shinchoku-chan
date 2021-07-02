@@ -23,13 +23,24 @@ impl EventHandler for Handler {
             let tokens = &content[self.prefix.len()..];
             let mut tokens = tokens.split_whitespace();
             let command = tokens.next().expect("Unwrap command name.");
-            let mut args = tokens.collect::<Vec<&str>>();
+            let args = tokens.collect::<Vec<&str>>();
 
             match command {
-                "ping" => ping(&ctx, &msg),
-                "記録" | "感想" | "進捗" | "今日の感想" => post(&ctx, &msg, args),
-                "表示" => show(&ctx, &msg),
-                "heroku" | "へろく" => heroku_ps(&ctx, &msg, args),
+                "ping" => {
+                    ping(&ctx, &msg);
+                },
+                "記録" | "感想" | "進捗" | "今日の感想" => {
+                    post(&ctx, &msg, args);
+                },
+                "表示" => {
+                    show(&ctx, &msg);
+                },
+                "heroku" | "へろく" => {
+                    heroku_ps(&ctx, &msg, args);
+                },
+                "タスク" => {
+                    fetch_issue(&ctx, &msg);
+                }
                 _ => {
                     if let Err(why) = msg.channel_id.say(&ctx.http, &format!("`{}` ってなんのこと？", command)) {
                         println!("Error sending message: {:?}", why);
