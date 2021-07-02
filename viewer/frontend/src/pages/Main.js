@@ -1,20 +1,21 @@
 import { useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import Button from '@material-ui/core/Button';
-import Typography from '@material-ui/core/Typography';
-import InputLabel from '@material-ui/core/InputLabel';
-import Container from '@material-ui/core/Container';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableContainer from '@material-ui/core/TableContainer';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
-import TextField from '@material-ui/core/TextField';
-import FormControl from '@material-ui/core/FormControl';
-import Select from '@material-ui/core/Select';
-import MenuItem from '@material-ui/core/MenuItem';
-import Grid from '@material-ui/core/Grid';
+
+import Button from '../components/Button.js';
+import Container from '../components/Container.js';
+import FormControl from '../components/FormControl.js';
+import Grid from '../components/Grid.js';
+import InputLabel from '../components/InputLabel.js';
+import MenuItem from '../components/MenuItem.js';
+import Select from '../components/Select.js';
+import Table from '../components/Table.js';
+import TableBody from '../components/TableBody.js';
+import TableCell from '../components/TableCell.js';
+import TableContainer from '../components/TableContainer.js';
+import TableHead from '../components/TableHead.js';
+import TableRow from '../components/TableRow.js';
+import TextField from '../components/TextField.js';
+import Typography from '../components/Typography.js';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -58,7 +59,6 @@ const Main = () => {
   };
 
   const handleLimitChange = (event) => {
-    console.log(event.target.value);
     if (event.target.value < 0) return setError(true);
     if (event.target.value === '') return setError(true);
     setError(false);
