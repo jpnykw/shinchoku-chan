@@ -1,4 +1,4 @@
-import {useState, useEffect} from 'react';
+import { useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
@@ -14,7 +14,6 @@ import TextField from '@material-ui/core/TextField';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
-import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
 
 const useStyles = makeStyles((theme) => ({
@@ -43,10 +42,12 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Main = () => {
+  const classes = useStyles();
   const [fetchDisabled, setFetchDisabled] = useState(false);
   const [progress, setProgress] = useState('');
   const [orderBy, setOrderBy] = useState('date');
   const [order, setOrder] = useState('DESC');
+  const [error, setError] = useState(false);
 
   const handleOrderByChange = (event) => {
     setOrderBy(event.target.value);
@@ -56,7 +57,15 @@ const Main = () => {
     setOrder(event.target.value);
   };
 
+  const handleLimitChange = (event) => {
+    console.log(event.target.value);
+    if (event.target.value < 0) return setError(true);
+    if (event.target.value === '') return setError(true);
+    setError(false);
+  }
+
   const fetch_posts_from_db = () => {
+    if (error) return false;
     if (!fetchDisabled) setFetchDisabled(true);
 
     let query = '';
@@ -80,13 +89,6 @@ const Main = () => {
     });
   }
 
-  useEffect(() => {
-    if (progress === '') return false;
-    console.log(JSON.parse(progress));
-  });
-
-  const classes = useStyles();
-
   return (
     <>
       <Container>
@@ -102,6 +104,8 @@ const Main = () => {
               defaultValue={100}
               autoComplete='off'
               className={classes.properties}
+              onChange={handleLimitChange}
+              error={error}
             />
           </Grid>
           <Grid item xs={3}>
@@ -164,15 +168,15 @@ const Main = () => {
 
       <Grid container justify = 'center' className={classes.tableGrid}>
         {
-          progress === '' || JSON.parse(progress).length === 0 ?
+          error || progress === '' || JSON.parse(progress).length === 0 ?
             (
               <Typography>
-                {progress === '' ? 'データを取得するボタンを押してね' : 'データが見つからないよ！'}
+                {error ? '使えない値が入力されているよ' : progress === '' ? 'データを取得するボタンを押してね' : 'データが見つからないよ！'}
               </Typography>
             )
           :
             (
-              <TableContainer component={Paper}>
+              <TableContainer>
                 <Table className={classes.table} aria-label='simple table'>
                   <TableHead>
                     <TableRow>
