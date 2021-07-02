@@ -2,9 +2,9 @@ import { useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 
 import Button from '../components/Button.js';
+import InputLabel from '../components/InputLabel.js';
 import Typography from '../components/Typography.js';
 
-import InputLabel from '@material-ui/core/InputLabel';
 import Container from '@material-ui/core/Container';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -60,7 +60,6 @@ const Main = () => {
   };
 
   const handleLimitChange = (event) => {
-    console.log(event.target.value);
     if (event.target.value < 0) return setError(true);
     if (event.target.value === '') return setError(true);
     setError(false);
