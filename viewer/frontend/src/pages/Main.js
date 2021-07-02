@@ -10,9 +10,9 @@ import TableCell from '../components/TableCell.js';
 import TableContainer from '../components/TableContainer.js';
 import TableHead from '../components/TableHead.js';
 import TableRow from '../components/TableRow.js';
+import TextField from '../components/TextField.js';
 import Typography from '../components/Typography.js';
 
-import TextField from '@material-ui/core/TextField';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
