@@ -1,9 +1,10 @@
+import React from 'react';
 import { default as MaterialMenuItem } from '@material-ui/core/MenuItem';
 
-const MenuItem = (props) => {
+const MenuItem = React.forwardRef((props, ref) => {
   return (
-    <MaterialMenuItem {...props} />
+    <MaterialMenuItem {...props} ref={ref} />
   );
-};
+});
 
 export default MenuItem;
