@@ -3,6 +3,7 @@ import { makeStyles } from '@material-ui/core/styles';
 
 import Button from '../components/Button.js';
 import Container from '../components/Container.js';
+import FormControl from '../components/FormControl.js';
 import InputLabel from '../components/InputLabel.js';
 import Table from '../components/Table.js';
 import TableBody from '../components/TableBody.js';
@@ -13,7 +14,6 @@ import TableRow from '../components/TableRow.js';
 import TextField from '../components/TextField.js';
 import Typography from '../components/Typography.js';
 
-import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import Grid from '@material-ui/core/Grid';
