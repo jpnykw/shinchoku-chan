@@ -5,9 +5,9 @@ import Button from '../components/Button.js';
 import Container from '../components/Container.js';
 import InputLabel from '../components/InputLabel.js';
 import Table from '../components/Table.js';
+import TableBody from '../components/TableBody.js';
 import Typography from '../components/Typography.js';
 
-import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
