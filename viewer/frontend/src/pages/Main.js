@@ -180,7 +180,7 @@ const Main = () => {
       {
         error || progress === '' || JSON.parse(progress).length === 0 ?
           (
-            <Typography>
+            <Typography className={classes.margin}>
               {
                 error ?
                   '使えない値が入力されているよ'
