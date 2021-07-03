@@ -195,11 +195,11 @@ const Main = () => {
         : (
           switchState ?
             (
-              <GraphView />
+              <GraphView progress={progress} />
             )
           :
             (
-              <TableView error={error} progress={progress} />
+              <TableView progress={progress} />
             )
         )
       }
