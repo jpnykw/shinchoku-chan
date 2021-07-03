@@ -68,15 +68,15 @@ const progress_to_data = (progress, minDate, maxDate) => {
     return_data.push(new_data);
   }
 
-  return [return_data, names];
+  return [return_data.reverse(), names];
 }
 
 const GraphView = ({ progress = '', minDate, maxDate }) => {
   const classes = useStyles();
 
   const result = progress_to_data(progress, minDate, maxDate);
-  const data = result[0]; // progress_to_data(progress)[0];
-  const names = result[1]; // progress_to_data(progress)[1];
+  const data = result[0];
+  const names = result[1];
 
   return (
     <Grid container justify = 'center'>
