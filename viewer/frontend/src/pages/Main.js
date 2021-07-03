@@ -4,10 +4,12 @@ import { makeStyles } from '@material-ui/core/styles';
 import Button from '../components/Button.js';
 import Container from '../components/Container.js';
 import FormControl from '../components/FormControl.js';
+import FormControlLabel from '../components/FormControlLabel.js';
 import Grid from '../components/Grid.js';
 import InputLabel from '../components/InputLabel.js';
 import MenuItem from '../components/MenuItem.js';
 import Select from '../components/Select.js';
+import Switch from '../components/Switch.js';
 import TextField from '../components/TextField.js';
 import Typography from '../components/Typography.js';
 
@@ -44,6 +46,7 @@ const Main = () => {
   const [order, setOrder] = useState('DESC');
   const [error, setError] = useState(false);
   const [item, setItem] = useState(['古い順', '新しい順']);
+  const [switchState, setSwitchState] = useState(false);
 
   const handleOrderByChange = (event) => {
     setOrderBy(event.target.value);
@@ -59,6 +62,10 @@ const Main = () => {
     if (event.target.value < 0) return setError(true);
     if (event.target.value === '') return setError(true);
     setError(false);
+  }
+
+  const handleSwitchChange = (event) => {
+    setSwitchState(event.target.checked);
   }
 
   const fetch_posts_from_db = () => {
@@ -152,6 +159,13 @@ const Main = () => {
           </Grid>
         </Grid>
 
+        <Container>
+          <FormControlLabel
+            control={<Switch checked={switchState} onChange={handleSwitchChange} name="checkedA" />}
+            label="グラフで表示する"
+          />
+        </Container>
+
         <Button
           variant='outlined'
           color='secondary'
@@ -163,8 +177,16 @@ const Main = () => {
         </Button>
       </Container>
 
-      {/* <GraphView /> */}
-      <TableView error={error} progress={progress} />
+      {
+        switchState ?
+          (
+            <GraphView />
+          )
+        :
+          (
+            <TableView error={error} progress={progress} />
+          )
+      }
     </>
   );
 }

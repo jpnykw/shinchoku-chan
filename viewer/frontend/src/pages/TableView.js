@@ -1,4 +1,3 @@
-// import { useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 
 import Grid from '../components/Grid.js';
@@ -62,7 +61,15 @@ const TableView = (props) => {
         error || progress === '' || JSON.parse(progress).length === 0 ?
           (
             <Typography>
-              {error ? '使えない値が入力されているよ' : progress === '' ? 'データを取得するボタンを押してね' : 'データが見つからないよ'}
+              {
+                error ?
+                  '使えない値が入力されているよ'
+                :
+                progress === '' ?
+                  'データを取得するボタンを押してね'
+                :
+                  'データが見つからないよ'
+              }
             </Typography>
           )
         :
