@@ -16,11 +16,16 @@ import Typography from '../components/Typography.js';
 import TableView from './TableView.js';
 import GraphView from './GraphView.js';
 
+import DateFnsUtils from '@date-io/date-fns';
+
+import {
+  MuiPickersUtilsProvider,
+  KeyboardDatePicker,
+} from '@material-ui/pickers';
+
 const useStyles = makeStyles((theme) => ({
   root: {
-    '& > *': {
-      margin: theme.spacing(1),
-    },
+    marginTop: theme.spacing(3),
   },
   title: {
     marginTop: theme.spacing(3),
@@ -30,9 +35,6 @@ const useStyles = makeStyles((theme) => ({
     marginTop: theme.spacing(2),
     marginBottom: theme.spacing(2),
   },
-  formControl: {
-    width: '80%',
-  },
   properties: {
     width: '80%',
   },
@@ -40,6 +42,12 @@ const useStyles = makeStyles((theme) => ({
 
 const Main = () => {
   const classes = useStyles();
+  const most_new_data_date = new Date();
+  const most_old_data_date = new Date('2021/6/29 00:00:00');
+
+  const [selectedStartDate, setSelectedStartDate] = useState(most_old_data_date);
+  const [selectedEndDate, setSelectedEndDate] = useState(most_new_data_date);
+
   const [fetchDisabled, setFetchDisabled] = useState(false);
   const [progress, setProgress] = useState('');
   const [orderBy, setOrderBy] = useState('date');
@@ -47,6 +55,14 @@ const Main = () => {
   const [error, setError] = useState(false);
   const [item, setItem] = useState(['古い順', '新しい順']);
   const [switchState, setSwitchState] = useState(false);
+
+  const handleStartDateChange = (date) => {
+    setSelectedStartDate(date);
+  };
+
+  const handleEndDateChange = (date) => {
+    setSelectedEndDate(date);
+  };
 
   const handleOrderByChange = (event) => {
     setOrderBy(event.target.value);
@@ -65,7 +81,11 @@ const Main = () => {
   }
 
   const handleSwitchChange = (event) => {
-    setSwitchState(event.target.checked);
+    const checked = event.target.checked;
+    setSwitchState(checked);
+
+    // 日付の範囲クロップの表示と非表示をアニメーションで切り替える
+    console.log(checked);
   }
 
   const fetch_posts_from_db = () => {
@@ -95,9 +115,7 @@ const Main = () => {
 
   return (
     <>
-      <Container>
-        <Typography variant='h5' className={classes.title}>💪進捗リスト💪</Typography>
-
+      <Container className={classes.root}>
         <Grid container justify='center' className={classes.margin}>
           <Grid item xs={3}>
             <TextField
@@ -126,7 +144,7 @@ const Main = () => {
 
         <Grid container justify='center' className={classes.margin}>
           <Grid item xs={3}>
-            <FormControl className={classes.formControl}>
+            <FormControl className={classes.properties}>
               <InputLabel id='order-by-select'>ソートする値</InputLabel>
               <Select
                 labelId='order-by-select'
@@ -143,7 +161,7 @@ const Main = () => {
           </Grid>
 
           <Grid item xs={3}>
-            <FormControl className={classes.formControl}>
+            <FormControl className={classes.properties}>
               <InputLabel id='order-select'>ソート順</InputLabel>
               <Select
                 labelId='order-select'
@@ -158,6 +176,55 @@ const Main = () => {
             </FormControl>
           </Grid>
         </Grid>
+
+        <MuiPickersUtilsProvider utils={DateFnsUtils}>
+          <Grid container justify='center' className={classes.margin}>
+            <Grid item xs={3}>
+              <KeyboardDatePicker
+                disableToolbar
+                variant="inline"
+                format="MM/dd/yyyy"
+                margin="normal"
+                label="開始日"
+                value={selectedStartDate}
+                onChange={handleStartDateChange}
+                className={classes.properties}
+                minDate={most_old_data_date}
+                disableFuture={true}
+                style={
+                  switchState ?
+                  { display: 'inline-block' } :
+                  { display: 'none' }
+                }
+                KeyboardButtonProps={{
+                  'aria-label': 'change date',
+                }}
+              />
+            </Grid>
+            <Grid item xs={3}>
+              <KeyboardDatePicker
+                disableToolbar
+                variant="inline"
+                format="MM/dd/yyyy"
+                margin="normal"
+                label="終了日"
+                value={selectedEndDate}
+                onChange={handleEndDateChange}
+                className={classes.properties}
+                minDate={most_old_data_date}
+                disableFuture={true}
+                style={
+                  switchState ?
+                  { display: 'inline-block' } :
+                  { display: 'none' }
+                }
+                KeyboardButtonProps={{
+                  'aria-label': 'change date',
+                }}
+              />
+            </Grid>
+          </Grid>
+        </MuiPickersUtilsProvider>
 
         <Container>
           <FormControlLabel
@@ -195,7 +262,11 @@ const Main = () => {
         : (
           switchState ?
             (
-              <GraphView progress={progress} />
+              <GraphView
+                progress={progress}
+                minDate={selectedStartDate}
+                maxDate={selectedEndDate}
+              />
             )
           :
             (

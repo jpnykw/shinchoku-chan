@@ -25,7 +25,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-const progress_to_data = (progress) => {
+const progress_to_data = (progress, minDate, maxDate) => {
   progress = JSON.parse(progress);
 
   // まずは同じ日付に投稿されたデータをまとめる
@@ -38,14 +38,18 @@ const progress_to_data = (progress) => {
     const date = parse_date(utc_to_jst(data.date));
     const key = `${date[0][1]}/${date[0][2]}`;
 
-    if (!names.includes(data.name)) {
-      names.push(data.name);
-    }
+    // データの日付が指定された範囲内であるかどうかを判定する
+    const current_time = utc_to_jst(data.date, true).getTime();
+    if(minDate.getTime() <= current_time && maxDate.getTime() >= current_time) {
+      if (!names.includes(data.name)) {
+        names.push(data.name);
+      }
 
-    if (new_data[key] === undefined) {
-      new_data[key] = [data];
-    } else {
-      new_data[key].push(data);
+      if (new_data[key] === undefined) {
+        new_data[key] = [data];
+      } else {
+        new_data[key].push(data);
+      }
     }
   }
 
@@ -67,12 +71,12 @@ const progress_to_data = (progress) => {
   return [return_data, names];
 }
 
-const GraphView = (props) => {
+const GraphView = ({ progress = '', minDate, maxDate }) => {
   const classes = useStyles();
-  const progress = props.progress || '';
 
-  const data = progress_to_data(progress)[0];
-  const names = progress_to_data(progress)[1];
+  const result = progress_to_data(progress, minDate, maxDate);
+  const data = result[0]; // progress_to_data(progress)[0];
+  const names = result[1]; // progress_to_data(progress)[1];
 
   return (
     <Grid container justify = 'center'>

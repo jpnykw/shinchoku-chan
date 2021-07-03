@@ -27,10 +27,15 @@ export const zero_pad_date = (date_string = null) => {
   return `${date} ${time}`;
 }
 
-export const utc_to_jst = (utc) => {
+export const utc_to_jst = (utc, raw = false) => {
   const date = new Date(utc);
   date.setHours(date.getHours() + 9);
-  const result = zero_pad_date(date.toLocaleString('ja'));
-  return result === null ? 'タイムスタンプが不正な値です' : result;
+
+  if (raw) {
+    return date;
+  } else {
+    const result = zero_pad_date(date.toLocaleString('ja'));
+    return result === null ? 'タイムスタンプが不正な値です' : result;
+  }
 }
 
