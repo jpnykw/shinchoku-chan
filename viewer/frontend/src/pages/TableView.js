@@ -7,37 +7,8 @@ import TableCell from '../components/TableCell.js';
 import TableContainer from '../components/TableContainer.js';
 import TableHead from '../components/TableHead.js';
 import TableRow from '../components/TableRow.js';
-import Typography from '../components/Typography.js';
 
-const zero_pad = (...args) => {
-  return args.map(number => {
-    if (number.length > 1 && number[0] === '0') return number;
-    return `${Number(number) < 10 ? '0' : ''}${number}`;
-  });
-}
-
-const parse_date = (date_string) => {
-  let date = date_string.split(' ')[0];
-  let time = date_string.split(' ')[1];
-
-  const [year, month, day] = date.split('/');
-  date = zero_pad(year, month, day).join('/');
-  const [hour, minute, second] = time.split(':');
-  time = zero_pad(hour, minute, second).join(':');
-  return `${date} ${time}`;
-}
-
-const zero_pad_date = (date_string = null) => {
-  if (date_string === null) return null;
-  return parse_date(date_string);
-}
-
-const utc_to_jst = (utc) => {
-  const date = new Date(utc);
-  date.setHours(date.getHours() + 9);
-  const result = zero_pad_date(date.toLocaleString('ja'));
-  return result === null ? 'タイムスタンプが不正な値です' : result;
-}
+import { utc_to_jst } from '../utils/date.js';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -52,7 +23,6 @@ const useStyles = makeStyles((theme) => ({
 
 const TableView = (props) => {
   const classes = useStyles();
-  const error = props.error;
   const progress = props.progress || '';
 
   return (
