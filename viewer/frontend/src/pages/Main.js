@@ -43,7 +43,7 @@ const useStyles = makeStyles((theme) => ({
 const Main = () => {
   const classes = useStyles();
   const most_new_data_date = new Date();
-  const most_old_data_date = new Date('2021/6/29 00:00:00');
+  const most_old_data_date = new Date('2021/6/30 00:00:00');
 
   const [selectedStartDate, setSelectedStartDate] = useState(most_old_data_date);
   const [selectedEndDate, setSelectedEndDate] = useState(most_new_data_date);
