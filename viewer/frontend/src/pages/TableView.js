@@ -57,55 +57,36 @@ const TableView = (props) => {
 
   return (
     <Grid container justify = 'center' className={classes.tableGrid}>
-      {
-        error || progress === '' || JSON.parse(progress).length === 0 ?
-          (
-            <Typography>
-              {
-                error ?
-                  '使えない値が入力されているよ'
-                :
-                progress === '' ?
-                  'データを取得するボタンを押してね'
-                :
-                  'データが見つからないよ'
-              }
-            </Typography>
-          )
-        :
-          (
-            <TableContainer>
-              <Table className={classes.table} aria-label='simple table'>
-                <TableHead>
-                  <TableRow>
-                    <TableCell>ユーザー</TableCell>
-                    <TableCell>投稿日時(JST)</TableCell>
-                    <TableCell>投稿内容</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {JSON.parse(progress).map((row_data_packet, key) => {
-                    const { name, content, date } = row_data_packet;
-                    return (
-                      <TableRow
-                        style={
-                          key % 2 === 0 ? 
-                          { background : '#f7fafc' } :
-                          { background : 'white' }
-                        }
-                        key={key}
-                      >
-                        <TableCell>{ name }</TableCell>
-                        <TableCell>{ utc_to_jst(date) }</TableCell>
-                        <TableCell>{ content }</TableCell>
-                      </TableRow>
-                    );
-                  })}
-                </TableBody>
-              </Table>
-            </TableContainer>
-          )
-      }
+      <TableContainer>
+        <Table className={classes.table} aria-label='simple table'>
+          <TableHead>
+            <TableRow>
+              <TableCell>ユーザー</TableCell>
+              <TableCell>投稿日時(JST)</TableCell>
+              <TableCell>投稿内容</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {JSON.parse(progress).map((row_data_packet, key) => {
+              const { name, content, date } = row_data_packet;
+              return (
+                <TableRow
+                  style={
+                    key % 2 === 0 ? 
+                    { background : '#f7fafc' } :
+                    { background : 'white' }
+                  }
+                  key={key}
+                >
+                  <TableCell>{ name }</TableCell>
+                  <TableCell>{ utc_to_jst(date) }</TableCell>
+                  <TableCell>{ content }</TableCell>
+                </TableRow>
+              );
+            })}
+          </TableBody>
+        </Table>
+      </TableContainer>
     </Grid>
   );
 }

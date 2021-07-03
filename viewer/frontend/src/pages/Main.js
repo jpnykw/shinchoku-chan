@@ -178,14 +178,30 @@ const Main = () => {
       </Container>
 
       {
-        switchState ?
+        error || progress === '' || JSON.parse(progress).length === 0 ?
           (
-            <GraphView />
+            <Typography>
+              {
+                error ?
+                  '使えない値が入力されているよ'
+                :
+                progress === '' ?
+                  'データを取得するボタンを押してね'
+                :
+                  'データが見つからないよ'
+              }
+            </Typography>
           )
-        :
-          (
-            <TableView error={error} progress={progress} />
-          )
+        : (
+          switchState ?
+            (
+              <GraphView />
+            )
+          :
+            (
+              <TableView error={error} progress={progress} />
+            )
+        )
       }
     </>
   );
