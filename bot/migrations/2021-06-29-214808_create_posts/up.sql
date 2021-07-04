@@ -4,3 +4,14 @@ CREATE TABLE posts (
   content TEXT NOT NULL,
   date DATETIME NOT NULL
 );
+
+CREATE TABLE commits (
+  id INTEGER AUTO_INCREMENT PRIMARY KEY,
+  user TEXT NOT NULL,
+  additions INTEGER NOT NULL,
+  deletions INTEGER NOT NULL,
+  hash TEXT NOT NULL,
+  repo_owner TEXT NOT NULL,
+  repo_name TEXT NOT NULL,
+  date DATETIME NOT NULL
+);
