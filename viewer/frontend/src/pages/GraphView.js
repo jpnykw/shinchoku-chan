@@ -14,8 +14,7 @@ import {
   YAxis,
   CartesianGrid,
   Tooltip,
-  Legend,
-  Label,
+  Legend
 } from 'recharts';
 
 const useStyles = makeStyles((theme) => ({

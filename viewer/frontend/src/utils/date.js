@@ -10,12 +10,11 @@ export const parse_date = (date_string) => {
   let time = date_string.split(' ')[1];
 
   const [year, month, day] = date.split('/');
-  date = zero_pad(year, month, day); // .join('/');
+  date = zero_pad(year, month, day);
 
   const [hour, minute, second] = time.split(':');
-  time = zero_pad(hour, minute, second); // .join(':');
+  time = zero_pad(hour, minute, second);
 
-  // return `${date} ${time}`;
   return [date, time];
 }
 

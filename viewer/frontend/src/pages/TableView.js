@@ -24,6 +24,7 @@ const useStyles = makeStyles((theme) => ({
 const TableView = (props) => {
   const classes = useStyles();
   const progress = props.progress || '';
+  if (progress === '') return null;
 
   return (
     <Grid container justify = 'center' className={classes.tableGrid}>

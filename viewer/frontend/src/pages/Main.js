@@ -107,8 +107,8 @@ const Main = () => {
     fetch(`/api${query}`)
     .then((response) => response.json())
     .then((data) => {
-      setProgress(data.result);
       // 連打してサーバーへの過度なアクセスを防ぐ為に 2.5 秒のクールダウンを発生させる
+      setProgress(data.result);
       setTimeout(() => setFetchDisabled(false), 2500);
     });
   }
