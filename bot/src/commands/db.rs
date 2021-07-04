@@ -5,7 +5,6 @@ use shinchoku_chan::*;
 use serenity::{
     prelude::*,
     model::prelude::*,
-    framework::standard::Args,
 };
 
 // DB に接続して投稿された内容を記録する
