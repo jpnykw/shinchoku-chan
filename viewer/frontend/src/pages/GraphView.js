@@ -14,7 +14,8 @@ import {
   YAxis,
   CartesianGrid,
   Tooltip,
-  Legend
+  Legend,
+  Label,
 } from 'recharts';
 
 const useStyles = makeStyles((theme) => ({
@@ -25,7 +26,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-const progress_to_data = (progress, minDate, maxDate) => {
+const progress_to_data = (mode = 'posts', progress, minDate, maxDate) => {
   progress = JSON.parse(progress);
 
   // まずは同じ日付に投稿されたデータをまとめる
@@ -62,7 +63,19 @@ const progress_to_data = (progress, minDate, maxDate) => {
 
     for (const post of posts) {
       const key = post.name;
-      new_data[key] += 1;
+
+      switch (mode) {
+        case 'posts':
+          new_data[key] += 1;
+          break;
+
+        case 'content-length':
+          new_data[key] += post.content.length;
+          break;
+
+        default:
+          break;
+      }
     }
 
     return_data.push(new_data);
@@ -72,18 +85,56 @@ const progress_to_data = (progress, minDate, maxDate) => {
 }
 
 const GraphView = ({ progress = '', minDate, maxDate }) => {
+  const color_palette = ['EA7317', '2364AA', 'F76F8E', '73BFB8'];
   const classes = useStyles();
 
-  const result = progress_to_data(progress, minDate, maxDate);
-  const data = result[0];
-  const names = result[1];
+  const results = [
+    progress_to_data('posts', progress, minDate, maxDate),
+    progress_to_data('content-length', progress, minDate, maxDate),
+  ];
+
+  const data = results.map((result) => result[0]);
+  const names = results.map((result) => result[1]);
 
   return (
     <Grid container justify = 'center'>
       <LineChart
         width={500}
         height={300}
-        data={data}
+        data={data[0]}
+        margin={{
+          top: 5,
+          right: 30,
+          left: 20,
+          bottom: 5
+        }}
+        className={classes.lineChart}
+      >
+        <CartesianGrid strokeDasharray="3 3" />
+        <XAxis dataKey="name" />
+        <YAxis/>
+        <Tooltip />
+        <Legend />
+        {
+          names[0].map((name, index) => {
+            const color = `#${color_palette[index]}`;
+            return (
+              index === 0 ?
+                (
+                  <Line key={index} type="monotone" dataKey={name} stroke={color} activeDot={{ r: 8 }} />
+                )
+              :
+                (
+                  <Line key={index} type="monotone" dataKey={name} stroke={color} />
+                )
+            )
+          })
+        }
+      </LineChart>
+      <LineChart
+        width={500}
+        height={300}
+        data={data[1]}
         margin={{
           top: 5,
           right: 30,
@@ -98,11 +149,10 @@ const GraphView = ({ progress = '', minDate, maxDate }) => {
         <Tooltip />
         <Legend />
         {
-          names.map((name, index) => {
-            const color_palette = ['F3CA40', 'F2A541', 'F08A4B', 'D78A76', '577590'];
+          names[1].map((name, index) => {
             const color = `#${color_palette[index]}`;
             return (
-              index === 0 ? 
+              index === 0 ?
                 (
                   <Line key={index} type="monotone" dataKey={name} stroke={color} activeDot={{ r: 8 }} />
                 )
