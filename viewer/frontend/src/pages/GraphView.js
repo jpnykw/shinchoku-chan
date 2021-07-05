@@ -161,7 +161,7 @@ const GraphView = ({
 
 
   const data = results.map((result) => result[0]);
-  const names = results.map((result) => result[1]);
+  const names = results.map((result) => result[1].sort());
 
   return (
     <>
@@ -319,7 +319,7 @@ const GraphView = ({
                 <Tooltip />
                 <Legend />
                 {
-                  names[2].map((name, index) => {
+                  names[3].map((name, index) => {
                     const color = `#${color_palette[index]}`;
                     return (
                       index === 0 ?
