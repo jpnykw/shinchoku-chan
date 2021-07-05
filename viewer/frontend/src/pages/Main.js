@@ -38,6 +38,9 @@ const useStyles = makeStyles((theme) => ({
   properties: {
     width: '80%',
   },
+  pageBottom: {
+    marginBottom: theme.spacing(10),
+  }
 }));
 
 const Main = () => {
@@ -45,16 +48,21 @@ const Main = () => {
   const most_new_data_date = new Date();
   const most_old_data_date = new Date('2021/6/30 00:00:00');
 
-  const [selectedStartDate, setSelectedStartDate] = useState(most_old_data_date);
   const [selectedEndDate, setSelectedEndDate] = useState(most_new_data_date);
+  const [selectedStartDate, setSelectedStartDate] = useState(most_old_data_date);
 
   const [fetchDisabled, setFetchDisabled] = useState(false);
-  const [progress, setProgress] = useState('');
+
+  const [progress, setProgress] = useState(''); // from posts table
+  const [commits, setCommits] = useState(''); // from commits table
+
   const [orderBy, setOrderBy] = useState('date');
   const [order, setOrder] = useState('DESC');
   const [error, setError] = useState(false);
   const [item, setItem] = useState(['古い順', '新しい順']);
-  const [graphState, setGraphState] = useState(false);
+
+  const [diffState, setDiffState] = useState(false); // show graph of commits (diff)
+  const [graphState, setGraphState] = useState(false); // show as graph
 
   const handleStartDateChange = (date) => {
     setSelectedStartDate(date);
@@ -81,14 +89,14 @@ const Main = () => {
   }
 
   const handleGraphChange = (event) => {
-    const checked = event.target.checked;
-    setGraphState(checked);
-
-    // 日付の範囲クロップの表示と非表示をアニメーションで切り替える
-    console.log(checked);
+    setGraphState(event.target.checked);
   }
 
-  const fetch_posts_from_db = () => {
+  const handleDiffChange = (event) => {
+    setDiffState(event.target.checked);
+  }
+
+  const fetch_table_from_db = (table = 'posts') => {
     if (error) return false;
     if (!fetchDisabled) setFetchDisabled(true);
 
@@ -104,11 +112,24 @@ const Main = () => {
       if (column_value !== '' && column_value !== '*') query = `${query}${prefix}${column_name}=${column_value}`;
     }
 
-    fetch(`/api/posts/${query}`)
+    fetch(`/api/${table}/${query}`)
     .then((response) => response.json())
     .then((data) => {
-      // 連打してサーバーへの過度なアクセスを防ぐ為に 2.5 秒のクールダウンを発生させる
-      setProgress(data.result);
+      const result = data.result;
+
+      switch (table) {
+        case 'posts':
+          setProgress(result);
+          break;
+
+        case 'commits':
+          setCommits(result);
+          break;
+
+        // no default
+      }
+
+      // サーバーへの過度なアクセスを防ぐ為に 2.5 秒のクールダウンを発生させる
       setTimeout(() => setFetchDisabled(false), 2500);
     });
   }
@@ -236,8 +257,8 @@ const Main = () => {
           <FormControlLabel
             control={
               <Switch
-                // checked={graphState}
-                // onChange={handleSwitchChange}
+                checked={diffState}
+                onChange={handleDiffChange}
                 name="diff"
               />
             }
@@ -261,7 +282,10 @@ const Main = () => {
         <Button
           variant='outlined'
           color='secondary'
-          onClick={fetch_posts_from_db}
+          onClick={() => {
+            fetch_table_from_db('posts');
+            if (diffState) fetch_table_from_db('commits');
+          }}
           className={classes.margin}
           disabled={fetchDisabled}
         >
@@ -269,36 +293,42 @@ const Main = () => {
         </Button>
       </Container>
 
-      {
-        error || progress === '' || JSON.parse(progress).length === 0 ?
-          (
-            <Typography className={classes.margin}>
-              {
-                error ?
-                  '使えない値が入力されているよ'
-                :
-                progress === '' ?
-                  'データを取得するボタンを押してね'
-                :
-                  'データが見つからないよ'
-              }
-            </Typography>
+      <Container className={classes.pageBottom} >
+        {
+          error || progress === '' || JSON.parse(progress).length === 0 ?
+            (
+              <Typography className={classes.margin}>
+                {
+                  error ?
+                    '使えない値が入力されているよ'
+                  :
+                  progress === '' ?
+                    'データを取得するボタンを押してね'
+                  :
+                    'データが見つからないよ'
+                }
+              </Typography>
+            )
+          : (
+            graphState ?
+              (
+                <GraphView
+                  commits={commits}
+                  progress={progress}
+                  minDate={selectedStartDate}
+                  maxDate={selectedEndDate}
+                  showCommits={diffState}
+                />
+              )
+            :
+              (
+                <TableView
+                  progress={progress}
+                />
+              )
           )
-        : (
-          graphState ?
-            (
-              <GraphView
-                progress={progress}
-                minDate={selectedStartDate}
-                maxDate={selectedEndDate}
-              />
-            )
-          :
-            (
-              <TableView progress={progress} />
-            )
-        )
-      }
+        }
+      </Container>
     </>
   );
 }
