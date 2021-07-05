@@ -16,18 +16,16 @@ const express = require('express');
 const path = require('path');
 const app = express();
 
-app.use(express.static(path.join(__dirname, '../frontend/build')));
-
-// posts テーブルの値を取得するためのエンドポイント
-app.get('/api/posts/', (request, response) => {
+// 指定したテーブルの値を取得する
+const fetch = (table, request, response) => {
+  console.log('table', table);
   const keys = Object.keys(request.query);
   if (keys.length === 0) return null;
-
   const mode = 'OR';
   let data = null;
 
   const query = {
-    mysql: 'SELECT * FROM posts',
+    mysql: `SELECT * FROM ${table}`,
     where: false,
     limit: false,
     order_by: false,
@@ -76,7 +74,11 @@ app.get('/api/posts/', (request, response) => {
       response.json({ result: JSON.stringify(result) });
     });
   });
-});
+}
+
+app.use(express.static(path.join(__dirname, '../frontend/build')));
+app.get('/api/posts/', (request, response) => fetch('posts', request, response));
+app.get('/api/commits/', (request, response) => fetch('commits', request, response));
 
 app.get('*', (_, response) => {
   response.sendFile(path.join(__dirname, '../frontend/build/index.html'));
