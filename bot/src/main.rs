@@ -1,5 +1,7 @@
 extern crate regex;
+extern crate shinchoku_chan;
 
+use shinchoku_chan::*;
 use std::process::Command;
 use regex::Regex;
 use std::env;
@@ -63,9 +65,7 @@ impl EventHandler for Handler {
                 match caps {
                     Some(_) => {
                         let commit_url = &embed.url.as_ref().unwrap();
-                        dbg!("fetching from");
-
-                        // TODO: commit を行ったユーザーを特定する
+                        let author = &embed.author.as_ref().unwrap().name;
 
                         let params = commit_url.split("/").collect::<Vec<&str>>();
                         let repo_owner = params[3];
@@ -92,21 +92,31 @@ impl EventHandler for Handler {
                         let caps = re.captures(&result).unwrap();
                         let re = Regex::new(r"\d+").unwrap();
                         let caps = re.captures(&caps[0].trim()).unwrap();
-                        let additions = &caps[0].trim();
+                        let additions: i32 = caps[0].trim().parse().unwrap();
 
                         let re = Regex::new(r"deletions.*\d+").unwrap();
                         let caps = re.captures(&result).unwrap();
                         let re = Regex::new(r"\d+").unwrap();
                         let caps = re.captures(&caps[0].trim()).unwrap();
-                        let deletions = &caps[0].trim();
+                        let deletions: i32 = caps[0].trim().parse().unwrap();
+
+                        // TODO: 差分を DB に記録する
+                        let connection = establish_connection();
+                        create_commit(
+                            &connection,
+                            author,
+                            &additions,
+                            &deletions,
+                            commit_hash,
+                            repo_owner,
+                            repo_name,
+                        );
 
                         msg.channel_id.say(&ctx, &format!(
-                            "差分を検出したよ！\n```diff\n+ {}\n- {}\n```",
+                            "差分を記録したよ！\n```diff\n+ {}\n- {}\n```",
                             additions,
                             deletions,
                         ));
-
-                        // TODO: 差分を DB に記録する
                     },
                     None => {},
                 };
