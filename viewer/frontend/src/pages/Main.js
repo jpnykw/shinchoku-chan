@@ -54,7 +54,7 @@ const Main = () => {
   const [order, setOrder] = useState('DESC');
   const [error, setError] = useState(false);
   const [item, setItem] = useState(['古い順', '新しい順']);
-  const [switchState, setSwitchState] = useState(false);
+  const [graphState, setGraphState] = useState(false);
 
   const handleStartDateChange = (date) => {
     setSelectedStartDate(date);
@@ -80,9 +80,9 @@ const Main = () => {
     setError(false);
   }
 
-  const handleSwitchChange = (event) => {
+  const handleGraphChange = (event) => {
     const checked = event.target.checked;
-    setSwitchState(checked);
+    setGraphState(checked);
 
     // 日付の範囲クロップの表示と非表示をアニメーションで切り替える
     console.log(checked);
@@ -192,7 +192,7 @@ const Main = () => {
                 minDate={most_old_data_date}
                 disableFuture={true}
                 style={
-                  switchState ?
+                  graphState ?
                   { display: 'inline-block' } :
                   { display: 'none' }
                 }
@@ -214,7 +214,7 @@ const Main = () => {
                 minDate={most_old_data_date}
                 disableFuture={true}
                 style={
-                  switchState ?
+                  graphState ?
                   { display: 'inline-block' } :
                   { display: 'none' }
                 }
@@ -226,9 +226,34 @@ const Main = () => {
           </Grid>
         </MuiPickersUtilsProvider>
 
+        <Container
+          style={
+            graphState ?
+            { display: 'inline-block' } :
+            { display: 'none' }
+          }
+        >
+          <FormControlLabel
+            control={
+              <Switch
+                // checked={graphState}
+                // onChange={handleSwitchChange}
+                name="diff"
+              />
+            }
+            label="差分を表示する"
+          />
+        </Container>
+
         <Container>
           <FormControlLabel
-            control={<Switch checked={switchState} onChange={handleSwitchChange} name="checkedA" />}
+            control={
+              <Switch 
+                checked={graphState}
+                onChange={handleGraphChange}
+                name="graph"
+              />
+            }
             label="グラフで表示する"
           />
         </Container>
@@ -260,7 +285,7 @@ const Main = () => {
             </Typography>
           )
         : (
-          switchState ?
+          graphState ?
             (
               <GraphView
                 progress={progress}
