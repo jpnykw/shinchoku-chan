@@ -94,6 +94,13 @@ const Main = () => {
 
   const handleDiffChange = (event) => {
     setDiffState(event.target.checked);
+
+    // 差分表示が ON になった時にデータを取得していなかったら取得する
+    // ただし progress が空 (posts からデータを取得していない場合) であれば
+    // commits からの fetch を行わない
+    if (!diffState && progress !== '' && commits === '') {
+      fetch_table_from_db('commits');
+    }
   }
 
   const fetch_table_from_db = (table = 'posts') => {
