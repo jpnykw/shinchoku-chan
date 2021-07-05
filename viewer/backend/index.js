@@ -18,9 +18,11 @@ const app = express();
 
 app.use(express.static(path.join(__dirname, '../frontend/build')));
 
-// テーブルの値を取得するためのエンドポイント
-app.get('/api', (request, response) => {
+// posts テーブルの値を取得するためのエンドポイント
+app.get('/api/posts/', (request, response) => {
   const keys = Object.keys(request.query);
+  if (keys.length === 0) return null;
+
   const mode = 'OR';
   let data = null;
 

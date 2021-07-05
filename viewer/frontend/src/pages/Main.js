@@ -104,7 +104,7 @@ const Main = () => {
       if (column_value !== '' && column_value !== '*') query = `${query}${prefix}${column_name}=${column_value}`;
     }
 
-    fetch(`/api${query}`)
+    fetch(`/api/posts/${query}`)
     .then((response) => response.json())
     .then((data) => {
       // 連打してサーバーへの過度なアクセスを防ぐ為に 2.5 秒のクールダウンを発生させる
