@@ -18,9 +18,8 @@ const app = express();
 
 // 指定したテーブルの値を取得する
 const fetch = (table, request, response) => {
-  console.log('table', table);
+  if (request.query === undefined) return null;
   const keys = Object.keys(request.query);
-  if (keys.length === 0) return null;
   const mode = 'OR';
   let data = null;
 
@@ -85,3 +84,4 @@ app.get('*', (_, response) => {
 });
 
 app.listen(port, () => console.log(`Listening on localhost:${port}`));
+
