@@ -64,8 +64,19 @@ impl EventHandler for Handler {
                 // タイトルに new commit が含まれていれば diff を取得する
                 match caps {
                     Some(_) => {
-                        let commit_url = &embed.url.as_ref().unwrap();
                         let author = &embed.author.as_ref().unwrap().name;
+
+                        // commit がまとめて行われていたかどうかを区別する
+                        let commit_url = &embed.url.as_ref().unwrap();
+                        let re = Regex::new(r"compare").unwrap();
+                        let caps = re.captures(commit_url);
+
+                        let location = match caps {
+                            // まとめて行われていた場合
+                            Some(_) => "compare",
+                            // 1つだけの commit の場合
+                            None => "commits",
+                        };
 
                         let params = commit_url.split("/").collect::<Vec<&str>>();
                         let repo_owner = params[3];
@@ -73,9 +84,10 @@ impl EventHandler for Handler {
                         let commit_hash = params[6];
  
                         let fetch_url = &format!(
-                            "https://api.github.com/repos/{}/{}/commits/{}",
+                            "https://api.github.com/repos/{}/{}/{}/{}",
                             repo_owner,
                             repo_name,
+                            location,
                             commit_hash,
                         );
 
@@ -87,20 +99,41 @@ impl EventHandler for Handler {
                             .expect("Failed to execute `curl -u ...`");
 
                         let result: String = String::from_utf8_lossy(&output.stdout).to_string();
- 
-                        let re = Regex::new(r"additions.*\d+").unwrap();
-                        let caps = re.captures(&result).unwrap();
-                        let re = Regex::new(r"\d+").unwrap();
-                        let caps = re.captures(&caps[0].trim()).unwrap();
-                        let additions: i32 = caps[0].trim().parse().unwrap();
+                        let add_re = Regex::new(r"additions.*\d+").unwrap();
+                        let del_re = Regex::new(r"deletions.*\d+").unwrap();
 
-                        let re = Regex::new(r"deletions.*\d+").unwrap();
-                        let caps = re.captures(&result).unwrap();
-                        let re = Regex::new(r"\d+").unwrap();
-                        let caps = re.captures(&caps[0].trim()).unwrap();
-                        let deletions: i32 = caps[0].trim().parse().unwrap();
+                        let (additions, deletions): (i32, i32) = if location == "compare" {
+                            // 複数の commit が行われた場合
+                            let mut add_sum: i32 = 0;
+                            for add_caps in add_re.captures_iter(&result) {
+                                let re = Regex::new(r"\d+").unwrap();
+                                let caps = re.captures(&add_caps[0].trim()).unwrap();
+                                add_sum += caps[0].trim().parse::<i32>().unwrap();
+                            }
 
-                        // TODO: 差分を DB に記録する
+                            let mut del_sum: i32 = 0;
+                            for del_caps in del_re.captures_iter(&result) {
+                                let re = Regex::new(r"\d+").unwrap();
+                                let caps = re.captures(&del_caps[0].trim()).unwrap();
+                                del_sum += caps[0].trim().parse::<i32>().unwrap();
+                            }
+
+                            (add_sum, del_sum)
+                        } else {
+                            // 単体の commit が行われた場合
+                            let add_caps = add_re.captures(&result).unwrap();
+                            let re = Regex::new(r"\d+").unwrap();
+                            let caps = re.captures(&add_caps[0].trim()).unwrap();
+                            let add_sum = caps[0].trim().parse().unwrap();
+
+                            let del_caps = del_re.captures(&result).unwrap();
+                            let re = Regex::new(r"\d+").unwrap();
+                            let caps = re.captures(&del_caps[0].trim()).unwrap();
+                            let del_sum = caps[0].trim().parse().unwrap();
+
+                            (add_sum, del_sum)
+                        };
+
                         let connection = establish_connection();
                         create_commit(
                             &connection,
