@@ -55,7 +55,7 @@ impl EventHandler for Handler {
             }
         } else {
             // GitHub Bot のメッセージをキャッチする
-            if (author.bot && author.name == "GitHub") {
+            if author.bot && author.name == "GitHub" {
                 let embed = &msg.embeds[0];
                 let title = &embed.title.as_ref().unwrap();
                 let re = Regex::new(r"new commit").unwrap();
@@ -145,11 +145,14 @@ impl EventHandler for Handler {
                             repo_name,
                         );
 
-                        msg.channel_id.say(&ctx, &format!(
+                        match msg.channel_id.say(&ctx, &format!(
                             "差分を記録したよ！\n```diff\n+ {}\n- {}\n```",
                             additions,
                             deletions,
-                        ));
+                        )) {
+                            Err(e) => { dbg!(e); },
+                            Ok(_) => {},
+                        };
                     },
                     None => {},
                 };

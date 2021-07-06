@@ -9,18 +9,24 @@ use serenity::{
 
 // DB に接続して投稿された内容を記録する
 pub fn post(ctx: &Context, msg: &Message, args: Vec<&str>) {
-    msg.channel_id.say(ctx, "ちょっとだけ待ってね…");
-    let connection = establish_connection();
+    match msg.channel_id.say(ctx, "ちょっとだけ待ってね…") {
+        Err(e) => {
+            dbg!(e);
+        },
+        Ok(_) => {
+            let connection = establish_connection();
 
-    // TODO: 内容が空だったりした場合に処理を変える
-    let name = &msg.author.name;
-    let content = args.join(" ");
+            // TODO: 内容が空だったりした場合に処理を変える
+            let name = &msg.author.name;
+            let content = args.join(" ");
 
-    let post = create_post(&connection, name, &content);
-    msg.channel_id.say(ctx, "ちゃんと記録したよ！");
-
-    println!("\n{} has write to DB with", name);
-    dbg!(post);
+            create_post(&connection, name, &content);
+            match msg.channel_id.say(ctx, "ちゃんと記録したよ！") {
+                Err(e) => { dbg!(e); },
+                Ok(_) => {},
+            };
+        }
+    };
 }
 
 pub fn show(ctx: &Context, msg: &Message) {
@@ -28,37 +34,57 @@ pub fn show(ctx: &Context, msg: &Message) {
     use diesel::prelude::*;
     use self::models::*;
 
-    msg.channel_id.say(ctx, "ちょっとだけ待ってね…");
-    let connection = establish_connection();
+    match msg.channel_id.say(ctx, "ちょっとだけ待ってね…") {
+        Err(e) => {
+            dbg!(e);
+        },
+        Ok(_) => {
+            let connection = establish_connection();
 
-    // 10件を取得
-    // TODO: 日時順にソートする
-    let results = posts
-        .order_by(post_date.desc())
-        .limit(10)
-        .load::<Post>(&connection)
-        .expect("Error loading posts");
+            // 最新の10件を取得
+            let results = posts
+                .order_by(post_date.desc())
+                .limit(10)
+                .load::<Post>(&connection)
+                .expect("Error loading posts");
 
-    // テーブルのデータをコード表示にする
-    let mut response = String::from("```\n最新の10件を取得しました\n");
-    response = format!("{}\n| {:<19} | {:<32} | {}", response, "Date(UTC)", "User", "Content");
-    response = format!("{}\n| {:<19} | {:<32} | {}", response, "-", "-", "-");
+            // テーブルのデータをコード表示にする
+            let mut response = String::from("```\n最新の10件を取得しました\n");
+            response = format!("{}\n| {:<19} | {:<20} | {}", response, "Date(UTC)", "User", "Content");
+            response = format!("{}\n| {:<19} | {:<20} | {}", response, "-", "-", "-");
 
-    for post in results {
-        let name = post.name;
-        let mut content = post.content;
-        let date = post.date.unwrap();
+            for post in results {
+                let mut name = post.name;
+                let mut content = post.content;
+                let date = post.date.unwrap();
 
-        let max_len = 30;
-        if content.chars().count() > max_len {
-            let content_subset = content.chars().enumerate().filter(|&(i, _)| i >= 0 && i < max_len).fold("".to_string(), |s, (_, c)| format!("{}{}", s, c));
-            content = format!("{}...", content_subset);
-        }
+                let max_len = 30;
+                if content.chars().count() > max_len {
+                    let content_subset = content.chars().enumerate().filter(|&(i, _)| i < max_len).fold("".to_string(), |s, (_, c)| format!("{}{}", s, c));
+                    content = format!("{}...", content_subset);
+                }
 
-        response = format!("{}\n| {:<19} | {:<32} | {}", response, date, name, content);
-    }
+                let max_len = 20;
+                if name.chars().count() > max_len {
+                    let name_subset = name.chars().enumerate().filter(|&(i, _)| i < max_len).fold("".to_string(), |s, (_, c)| format!("{}{}", s, c));
+                    name = format!("{}...", name_subset);
+                }
 
-    response = format!("{}\n```\nさいと：***REMOVED***", response);
-    msg.channel_id.say(ctx, "テーブルの中身を表示するよ！");
-    msg.channel_id.say(ctx, &response);
+                response = format!("{}\n| {:<19} | {:<20} | {}", response, date, name, content);
+            }
+
+            response = format!("{}\n```\nもっと詳しく見る: <***REMOVED***>", response);
+            match msg.channel_id.say(ctx, "テーブルの中身を表示するよ！") {
+                Err(e) => {
+                    dbg!(e);
+                },
+                Ok(_) => {
+                    match msg.channel_id.say(ctx, &response) {
+                        Err(e) => { dbg!(e); },
+                        Ok(_) => {},
+                    };
+                },
+            };
+        },
+    };
 }
