@@ -1,6 +1,7 @@
 extern crate diesel;
 extern crate shinchoku_chan;
 use shinchoku_chan::*;
+use std::env;
 
 use serenity::{
     prelude::*,
@@ -73,7 +74,9 @@ pub fn show(ctx: &Context, msg: &Message) {
                 response = format!("{}\n| {:<19} | {:<20} | {}", response, date, name, content);
             }
 
-            response = format!("{}\n```\nもっと詳しく見る: <***REMOVED***>", response);
+            let deploy_link = env::var("DEPLOY_URL").expect("DEPLOY_URL is not found in enviroment variable!");
+
+            response = format!("{}\n```\nもっと詳しく見る: <{}>", response, deploy_link);
             match msg.channel_id.say(ctx, "テーブルの中身を表示するよ！") {
                 Err(e) => {
                     dbg!(e);
