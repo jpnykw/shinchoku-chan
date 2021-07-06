@@ -57,13 +57,15 @@ const Main = () => {
   const timestamp = localStorage.getItem('fetch-timestamp');
   const cooldown = 3000;
 
-  if (timestamp !== null) {
-    localStorage.removeItem('fetch-timestamp');
+  if (timestamp !== null && !fetchDisabled) {
     setFetchDisabled(true);
-
     const now = new Date().getTime();
     const delay = Math.max(0, cooldown - (now - timestamp));
-    setTimeout(() => setFetchDisabled(false), delay);
+
+    setTimeout(() => {
+      localStorage.removeItem('fetch-timestamp');
+      setFetchDisabled(false)
+    }, delay);
   }
 
   const [progress, setProgress] = useState(''); // from posts table
