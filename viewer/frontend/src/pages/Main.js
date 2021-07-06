@@ -53,6 +53,19 @@ const Main = () => {
 
   const [fetchDisabled, setFetchDisabled] = useState(false);
 
+  // フェッチ後すぐに再読み込みを行った場合はクールダウンを発生させる
+  const timestamp = localStorage.getItem('fetch-timestamp');
+  const cooldown = 3000;
+
+  if (timestamp !== null) {
+    localStorage.removeItem('fetch-timestamp');
+    setFetchDisabled(true);
+
+    const now = new Date().getTime();
+    const delay = Math.max(0, cooldown - (now - timestamp));
+    setTimeout(() => setFetchDisabled(false), delay);
+  }
+
   const [progress, setProgress] = useState(''); // from posts table
   const [commits, setCommits] = useState(''); // from commits table
 
@@ -94,7 +107,6 @@ const Main = () => {
 
   const handleDiffChange = (event) => {
     setDiffState(event.target.checked);
-
     // 差分表示が ON になった時にデータを取得していなかったら取得する
     // ただし progress が空 (posts からデータを取得していない場合) であれば
     // commits からの fetch を行わない
@@ -136,8 +148,13 @@ const Main = () => {
         // no default
       }
 
-      // サーバーへの過度なアクセスを防ぐ為に 2.5 秒のクールダウンを発生させる
-      setTimeout(() => setFetchDisabled(false), 2500);
+      // サーバーへの過度なアクセスを防ぐ為にクールダウンを発生させる
+      // またページをリロードした場合にも引き継ぎたいのでタイムスタンプを保持する
+      localStorage.setItem('fetch-timestamp', new Date().getTime());
+      setTimeout(() => {
+        localStorage.removeItem('fetch-timestamp');
+        setFetchDisabled(false);
+      }, cooldown);
     });
   }
 
@@ -154,7 +171,7 @@ const Main = () => {
               defaultValue={100}
               autoComplete='off'
               className={classes.properties}
-              onChange={handleLimitChange}
+              onChange={(event) => handleLimitChange(event)}
               error={error}
             />
           </Grid>
@@ -179,7 +196,7 @@ const Main = () => {
                 id='order-by-select'
                 value={orderBy}
                 defaultValue='date'
-                onChange={handleOrderByChange}
+                onChange={(event) => handleOrderByChange(event)}
               >
                 <MenuItem value='date'>日付</MenuItem>
                 <MenuItem value='name'>名前</MenuItem>
@@ -196,7 +213,7 @@ const Main = () => {
                 id='order-select'
                 value={order}
                 defaultValue='ASC'
-                onChange={handleOrderChange}
+                onChange={(event) => handleOrderChange(event)}
               >
                 <MenuItem value='ASC'>{item[0]}</MenuItem>
                 <MenuItem value='DESC'>{item[1]}</MenuItem>
@@ -215,7 +232,7 @@ const Main = () => {
                 margin="normal"
                 label="開始日"
                 value={selectedStartDate}
-                onChange={handleStartDateChange}
+                onChange={(event) => handleStartDateChange(event)}
                 className={classes.properties}
                 minDate={most_old_data_date}
                 disableFuture={true}
@@ -237,7 +254,7 @@ const Main = () => {
                 margin="normal"
                 label="終了日"
                 value={selectedEndDate}
-                onChange={handleEndDateChange}
+                onChange={(event) => handleEndDateChange(event)}
                 className={classes.properties}
                 minDate={most_old_data_date}
                 disableFuture={true}
@@ -265,7 +282,7 @@ const Main = () => {
             control={
               <Switch
                 checked={diffState}
-                onChange={handleDiffChange}
+                onChange={(event) => handleDiffChange(event)}
                 name="diff"
               />
             }
@@ -278,7 +295,7 @@ const Main = () => {
             control={
               <Switch 
                 checked={graphState}
-                onChange={handleGraphChange}
+                onChange={(event) => handleGraphChange(event)}
                 name="graph"
               />
             }
