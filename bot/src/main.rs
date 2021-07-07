@@ -82,7 +82,7 @@ impl EventHandler for Handler {
                         let repo_owner = params[3];
                         let repo_name = params[4];
                         let commit_hash = params[6];
- 
+
                         let fetch_url = &format!(
                             "https://api.github.com/repos/{}/{}/{}/{}",
                             repo_owner,
@@ -102,56 +102,65 @@ impl EventHandler for Handler {
                         let add_re = Regex::new(r"additions.*\d+").unwrap();
                         let del_re = Regex::new(r"deletions.*\d+").unwrap();
 
-                        let (additions, deletions): (i32, i32) = if location == "compare" {
-                            // 複数の commit が行われた場合
-                            let mut add_sum: i32 = 0;
-                            for add_caps in add_re.captures_iter(&result) {
-                                let re = Regex::new(r"\d+").unwrap();
-                                let caps = re.captures(&add_caps[0].trim()).unwrap();
-                                add_sum += caps[0].trim().parse::<i32>().unwrap();
-                            }
+                        // 書き込む前に
+                        // PR を merge した際に差分が記録されないように
+                        // 同じ hash が既に存在していた場合は記録しない
+                        let re = Regex::new(r"Merge pull request").unwrap();
+                        match re.captures(&result) {
+                            Some(_) => {},
+                            None => {
+                                let (additions, deletions): (i32, i32) = if location == "compare" {
+                                    // 複数の commit が行われた場合
+                                    let mut add_sum: i32 = 0;
+                                    for add_caps in add_re.captures_iter(&result) {
+                                        let re = Regex::new(r"\d+").unwrap();
+                                        let caps = re.captures(&add_caps[0].trim()).unwrap();
+                                        add_sum += caps[0].trim().parse::<i32>().unwrap();
+                                    }
 
-                            let mut del_sum: i32 = 0;
-                            for del_caps in del_re.captures_iter(&result) {
-                                let re = Regex::new(r"\d+").unwrap();
-                                let caps = re.captures(&del_caps[0].trim()).unwrap();
-                                del_sum += caps[0].trim().parse::<i32>().unwrap();
-                            }
+                                    let mut del_sum: i32 = 0;
+                                    for del_caps in del_re.captures_iter(&result) {
+                                        let re = Regex::new(r"\d+").unwrap();
+                                        let caps = re.captures(&del_caps[0].trim()).unwrap();
+                                        del_sum += caps[0].trim().parse::<i32>().unwrap();
+                                    }
 
-                            (add_sum, del_sum)
-                        } else {
-                            // 単体の commit が行われた場合
-                            let add_caps = add_re.captures(&result).unwrap();
-                            let re = Regex::new(r"\d+").unwrap();
-                            let caps = re.captures(&add_caps[0].trim()).unwrap();
-                            let add_sum = caps[0].trim().parse().unwrap();
+                                    (add_sum, del_sum)
+                                } else {
+                                    // 単体の commit が行われた場合
+                                    let add_caps = add_re.captures(&result).unwrap();
+                                    let re = Regex::new(r"\d+").unwrap();
+                                    let caps = re.captures(&add_caps[0].trim()).unwrap();
+                                    let add_sum = caps[0].trim().parse().unwrap();
 
-                            let del_caps = del_re.captures(&result).unwrap();
-                            let re = Regex::new(r"\d+").unwrap();
-                            let caps = re.captures(&del_caps[0].trim()).unwrap();
-                            let del_sum = caps[0].trim().parse().unwrap();
+                                    let del_caps = del_re.captures(&result).unwrap();
+                                    let re = Regex::new(r"\d+").unwrap();
+                                    let caps = re.captures(&del_caps[0].trim()).unwrap();
+                                    let del_sum = caps[0].trim().parse().unwrap();
 
-                            (add_sum, del_sum)
-                        };
+                                    (add_sum, del_sum)
+                                };
 
-                        let connection = establish_connection();
-                        create_commit(
-                            &connection,
-                            author,
-                            &additions,
-                            &deletions,
-                            commit_hash,
-                            repo_owner,
-                            repo_name,
-                        );
+                                let connection = establish_connection();
+                                create_commit(
+                                    &connection,
+                                    author,
+                                    &additions,
+                                    &deletions,
+                                    commit_hash,
+                                    repo_owner,
+                                    repo_name,
+                                );
 
-                        match msg.channel_id.say(&ctx, &format!(
-                            "差分を記録したよ！\n```diff\n+ {}\n- {}\n```",
-                            additions,
-                            deletions,
-                        )) {
-                            Err(e) => { dbg!(e); },
-                            Ok(_) => {},
+                                match msg.channel_id.say(&ctx, &format!(
+                                    "差分を記録したよ！\n```diff\n+ {}\n- {}\n```",
+                                    additions,
+                                    deletions,
+                                )) {
+                                    Err(e) => { dbg!(e); },
+                                    Ok(_) => {},
+                                };
+                            },
                         };
                     },
                     None => {},
