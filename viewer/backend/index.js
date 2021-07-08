@@ -63,6 +63,8 @@ const fetch = (table, request, response) => {
   }
 
   pool.getConnection((_, connection) => {
+    console.log('Trying this query:\n', query.mysql);
+
     connection.query(query.mysql, (error, result) => {
       if (error) {
         response.json({ result: [] });

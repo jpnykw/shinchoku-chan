@@ -138,16 +138,24 @@ const Main = () => {
     if (!fetchDisabled) setFetchDisabled(true);
 
     let query = '';
-    for (const column_name of ['name', 'limit']) {
+    const add_to_query = (query, param) => {
       let prefix = query === '' ? '?' : '&';
-      if (column_name === 'limit') {
-        query = `${query}${prefix}order=${orderBy},${order}`;
-        prefix = '&';
-      }
-
-      const column_value = document.querySelector(`#${column_name}`).value;
-      if (column_value !== '' && column_value !== '*') query = `${query}${prefix}${column_name}=${column_value}`;
+      return `${query}${prefix}${param}`
     }
+
+    // ユーザー名
+    const name = document.querySelector('#name').value;
+    const use_name = name !== '' && name !== '*';
+    if (table === 'posts' && use_name) query = add_to_query(query, `name=${name}`);
+    if (table === 'commits' && use_name) query = add_to_query(query, `user=${name}`);
+
+    // ソート順
+    if (table === 'posts') query = add_to_query(query, `order=${orderBy},${order}`);
+    if (table === 'commits' && orderBy === 'date') query = add_to_query(query, `order=${orderBy},${order}`);
+
+    // 件数
+    const limit = document.querySelector('#limit').value;
+    if (limit !== '' && limit !== '*') query = add_to_query(query, `limit=${limit}`);
 
     fetch(`/api/${table}/${query}`)
     .then((response) => response.json())
