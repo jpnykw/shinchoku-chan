@@ -1,6 +1,10 @@
 import { useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 
+import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
+import * as colors from '@material-ui/core/colors';
+import CssBaseline from '@material-ui/core/CssBaseline';
+
 import Button from '../components/Button.js';
 import Container from '../components/Container.js';
 import FormControl from '../components/FormControl.js';
@@ -78,6 +82,18 @@ const Main = () => {
 
   const [diffState, setDiffState] = useState(false); // show graph of commits (diff)
   const [graphState, setGraphState] = useState(false); // show as graph
+
+  // ダークテーマは実装中なので一部要素が正しく表示されない
+  const [darkMode, setDarkMode] = useState(false);
+
+  const theme = createMuiTheme({
+    palette: {
+      primary: {
+        main: colors.blue[800],
+      },
+      type: darkMode ? 'dark' : 'light',
+    },
+  });
 
   const handleStartDateChange = (date) => {
     setSelectedStartDate(date);
@@ -161,7 +177,8 @@ const Main = () => {
   }
 
   return (
-    <>
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
       <Container className={classes.root}>
         <Grid container justify='center' className={classes.margin}>
           <Grid item xs={3}>
@@ -229,10 +246,10 @@ const Main = () => {
             <Grid item xs={3}>
               <KeyboardDatePicker
                 disableToolbar
-                variant="inline"
-                format="MM/dd/yyyy"
-                margin="normal"
-                label="開始日"
+                variant='inline'
+                format='MM/dd/yyyy'
+                margin='normal'
+                label='開始日'
                 value={selectedStartDate}
                 onChange={(event) => handleStartDateChange(event)}
                 className={classes.properties}
@@ -251,10 +268,10 @@ const Main = () => {
             <Grid item xs={3}>
               <KeyboardDatePicker
                 disableToolbar
-                variant="inline"
-                format="MM/dd/yyyy"
-                margin="normal"
-                label="終了日"
+                variant='inline'
+                format='MM/dd/yyyy'
+                margin='normal'
+                label='終了日'
                 value={selectedEndDate}
                 onChange={(event) => handleEndDateChange(event)}
                 className={classes.properties}
@@ -285,10 +302,10 @@ const Main = () => {
               <Switch
                 checked={diffState}
                 onChange={(event) => handleDiffChange(event)}
-                name="diff"
+                name='diff'
               />
             }
-            label="差分を表示する"
+            label='差分を表示する'
           />
         </Container>
 
@@ -298,10 +315,10 @@ const Main = () => {
               <Switch 
                 checked={graphState}
                 onChange={(event) => handleGraphChange(event)}
-                name="graph"
+                name='graph'
               />
             }
-            label="グラフで表示する"
+            label='グラフで表示する'
           />
         </Container>
 
@@ -355,7 +372,7 @@ const Main = () => {
           )
         }
       </Container>
-    </>
+    </ThemeProvider>
   );
 }
 
