@@ -21,9 +21,11 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const TableView = (props) => {
+const TableView = ({
+  darkMode,
+  progress = '',
+}) => {
   const classes = useStyles();
-  const progress = props.progress || '';
   if (progress === '') return null;
 
   return (
@@ -44,8 +46,13 @@ const TableView = (props) => {
                 <TableRow
                   style={
                     key % 2 === 0 ? 
-                    { background : '#f7fafc' } :
-                    { background : 'white' }
+                      {
+                        background : darkMode ? '#2a2a2a' : '#f7fafc'
+                      }
+                    :
+                      {
+                        background : 'none'
+                      }
                   }
                   key={key}
                 >

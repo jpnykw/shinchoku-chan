@@ -139,11 +139,12 @@ const commits_to_data = (mode = 'additions', commits, minDate, maxDate) => {
 }
 
 const GraphView = ({
+  darkMode,
   commits = '',  // commits
   progress = '', // posts
   showCommits = false,
   minDate,
-  maxDate
+  maxDate,
 }) => {
   const color_palette = ['EA7317', '2364AA', 'F76F8E', '73BFB8'];
   const classes = useStyles();
@@ -183,6 +184,7 @@ const GraphView = ({
             dataKey="name"
             label={{
               value: "投稿した数",
+              fill: darkMode ? '#f3f3f3' : '#222',
               position: "top",
               offset: 115,
             }}
@@ -224,6 +226,7 @@ const GraphView = ({
             dataKey="name"
             label={{
               value: "コンテンツ量",
+              fill: darkMode ? '#f3f3f3' : '#222',
               position: "top",
               offset: 115,
             }}
@@ -270,6 +273,7 @@ const GraphView = ({
                   dataKey="name"
                   label={{
                     value: "追加した行数",
+                    fill: darkMode ? '#f3f3f3' : '#222',
                     position: "top",
                     offset: 115,
                   }}
@@ -311,6 +315,7 @@ const GraphView = ({
                   dataKey="name"
                   label={{
                     value: "削除した行数",
+                    fill: darkMode ? '#f3f3f3' : '#222',
                     position: "top",
                     offset: 115,
                   }}

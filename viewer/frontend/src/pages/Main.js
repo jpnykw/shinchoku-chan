@@ -83,8 +83,10 @@ const Main = () => {
   const [diffState, setDiffState] = useState(false); // show graph of commits (diff)
   const [graphState, setGraphState] = useState(false); // show as graph
 
-  // ダークテーマは実装中なので一部要素が正しく表示されない
-  const [darkMode, setDarkMode] = useState(false);
+  // TODO: 今は環境に応じて自動的に設定しているため
+  // ユーザーからの切り替えを行う機能を実装する
+  /* eslint no-unused-vars: 0 */
+  const [darkMode, setDarkMode] = useState(window.matchMedia('(prefers-color-scheme: dark)').matches);
 
   const theme = createMuiTheme({
     palette: {
@@ -364,6 +366,7 @@ const Main = () => {
             graphState ?
               (
                 <GraphView
+                  darkMode={darkMode}
                   commits={commits}
                   progress={progress}
                   minDate={selectedStartDate}
@@ -374,6 +377,7 @@ const Main = () => {
             :
               (
                 <TableView
+                  darkMode={darkMode}
                   progress={progress}
                 />
               )
