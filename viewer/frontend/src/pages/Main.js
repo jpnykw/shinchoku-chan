@@ -5,6 +5,10 @@ import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 import * as colors from '@material-ui/core/colors';
 import CssBaseline from '@material-ui/core/CssBaseline';
 
+import IconButton from '@material-ui/core/IconButton';
+import Brightness7Icon from '@material-ui/icons/Brightness7';
+import Brightness4Icon from '@material-ui/icons/Brightness4';
+
 import Button from '../components/Button.js';
 import Container from '../components/Container.js';
 import FormControl from '../components/FormControl.js';
@@ -29,7 +33,7 @@ import {
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    marginTop: theme.spacing(3),
+    marginTop: theme.spacing(1),
   },
   title: {
     marginTop: theme.spacing(3),
@@ -83,10 +87,12 @@ const Main = () => {
   const [diffState, setDiffState] = useState(false); // show graph of commits (diff)
   const [graphState, setGraphState] = useState(false); // show as graph
 
-  // TODO: 今は環境に応じて自動的に設定しているため
-  // ユーザーからの切り替えを行う機能を実装する
   /* eslint no-unused-vars: 0 */
-  const [darkMode, setDarkMode] = useState(window.matchMedia('(prefers-color-scheme: dark)').matches);
+  const mode = localStorage.getItem('dark-mode');
+  const [darkMode, setDarkMode] = useState(
+    mode !== null ? mode === 'true' ? true : false :
+    window.matchMedia('(prefers-color-scheme: dark)').matches
+  );
 
   const theme = createMuiTheme({
     palette: {
@@ -96,6 +102,11 @@ const Main = () => {
       type: darkMode ? 'dark' : 'light',
     },
   });
+
+  const handleDarkMode = () => {
+    setDarkMode(!darkMode);
+    localStorage.setItem('dark-mode', !darkMode);
+  }
 
   const handleStartDateChange = (date) => {
     setSelectedStartDate(date);
@@ -190,6 +201,15 @@ const Main = () => {
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <Container className={classes.root}>
+        {darkMode ? (
+          <IconButton color='inherit' onClick={handleDarkMode}>
+            <Brightness7Icon />
+          </IconButton>
+        ) : (
+          <IconButton color='inherit' onClick={handleDarkMode}>
+            <Brightness4Icon />
+          </IconButton>
+        )}
         <Grid container justify='center' className={classes.margin}>
           <Grid item xs={3}>
             <TextField
