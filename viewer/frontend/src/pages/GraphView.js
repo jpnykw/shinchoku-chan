@@ -9,6 +9,7 @@ import {
 } from '../utils/date.js';
 
 import {
+  Brush,
   LineChart,
   Line,
   XAxis,
@@ -193,6 +194,12 @@ const GraphView = ({
           />
           <Tooltip />
           <Legend />
+          <Brush
+            dataKey="name"
+            stroke="#8884d8"
+            startIndex={Math.max(names[0].length - 1, 0)}
+            endIndex={names[0].length - Math.min(names[0].length, 6)}
+          />
           {
             names[0].map((name, index) => {
               const color = `#${color_palette[index]}`;
@@ -234,6 +241,12 @@ const GraphView = ({
           <YAxis />
           <Tooltip />
           <Legend />
+          <Brush
+            dataKey="name"
+            stroke="#8884d8"
+            startIndex={Math.max(names[1].length - 1, 0)}
+            endIndex={names[1].length - Math.min(names[1].length, 6)}
+          />
           {
             names[1].map((name, index) => {
               const color = `#${color_palette[index]}`;
@@ -281,6 +294,12 @@ const GraphView = ({
                 <YAxis />
                 <Tooltip />
                 <Legend />
+                <Brush
+                  dataKey="name"
+                  stroke="#8884d8"
+                  startIndex={Math.max(names[2].length - 1, 0)}
+                  endIndex={names[2].length - Math.min(names[2].length, 6)}
+                />
                 {
                   names[2].map((name, index) => {
                     const color = `#${color_palette[index]}`;
@@ -323,6 +342,12 @@ const GraphView = ({
                 <YAxis />
                 <Tooltip />
                 <Legend />
+                <Brush
+                  dataKey="name"
+                  stroke="#8884d8"
+                  startIndex={Math.max(names[3].length - 1, 0)}
+                  endIndex={names[3].length - Math.min(names[3].length, 6)}
+                />
                 {
                   names[3].map((name, index) => {
                     const color = `#${color_palette[index]}`;

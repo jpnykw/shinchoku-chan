@@ -24,13 +24,6 @@ import Typography from '../components/Typography.js';
 import TableView from './TableView.js';
 import GraphView from './GraphView.js';
 
-import DateFnsUtils from '@date-io/date-fns';
-
-import {
-  MuiPickersUtilsProvider,
-  KeyboardDatePicker,
-} from '@material-ui/pickers';
-
 const useStyles = makeStyles((theme) => ({
   root: {
     marginTop: theme.spacing(1),
@@ -56,12 +49,8 @@ const Main = () => {
   const most_new_data_date = new Date();
   const most_old_data_date = new Date('2021/6/30 00:00:00');
 
-  const [selectedEndDate, setSelectedEndDate] = useState(most_new_data_date);
-  const [selectedStartDate, setSelectedStartDate] = useState(most_old_data_date);
-
-  const [fetchDisabled, setFetchDisabled] = useState(false);
-
   // フェッチ後すぐに再読み込みを行った場合はクールダウンを発生させる
+  const [fetchDisabled, setFetchDisabled] = useState(false);
   const timestamp = localStorage.getItem('fetch-timestamp');
   const cooldown = 3000;
 
@@ -107,14 +96,6 @@ const Main = () => {
     setDarkMode(!darkMode);
     localStorage.setItem('dark-mode', !darkMode);
   }
-
-  const handleStartDateChange = (date) => {
-    setSelectedStartDate(date);
-  };
-
-  const handleEndDateChange = (date) => {
-    setSelectedEndDate(date);
-  };
 
   const handleOrderByChange = (event) => {
     setOrderBy(event.target.value);
@@ -271,55 +252,6 @@ const Main = () => {
           </Grid>
         </Grid>
 
-        <MuiPickersUtilsProvider utils={DateFnsUtils}>
-          <Grid container justify='center' className={classes.margin}>
-            <Grid item xs={3}>
-              <KeyboardDatePicker
-                disableToolbar
-                variant='inline'
-                format='MM/dd/yyyy'
-                margin='normal'
-                label='開始日'
-                value={selectedStartDate}
-                onChange={(event) => handleStartDateChange(event)}
-                className={classes.properties}
-                minDate={most_old_data_date}
-                disableFuture={true}
-                style={
-                  graphState ?
-                  { display: 'inline-block' } :
-                  { display: 'none' }
-                }
-                KeyboardButtonProps={{
-                  'aria-label': 'change date',
-                }}
-              />
-            </Grid>
-            <Grid item xs={3}>
-              <KeyboardDatePicker
-                disableToolbar
-                variant='inline'
-                format='MM/dd/yyyy'
-                margin='normal'
-                label='終了日'
-                value={selectedEndDate}
-                onChange={(event) => handleEndDateChange(event)}
-                className={classes.properties}
-                minDate={most_old_data_date}
-                disableFuture={true}
-                style={
-                  graphState ?
-                  { display: 'inline-block' } :
-                  { display: 'none' }
-                }
-                KeyboardButtonProps={{
-                  'aria-label': 'change date',
-                }}
-              />
-            </Grid>
-          </Grid>
-        </MuiPickersUtilsProvider>
-
         <Container
           style={
             graphState ?
@@ -389,8 +321,8 @@ const Main = () => {
                   darkMode={darkMode}
                   commits={commits}
                   progress={progress}
-                  minDate={selectedStartDate}
-                  maxDate={selectedEndDate}
+                  minDate={most_old_data_date}
+                  maxDate={most_new_data_date}
                   showCommits={diffState}
                 />
               )
