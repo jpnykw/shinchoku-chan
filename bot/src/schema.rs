@@ -16,6 +16,7 @@ table! {
         id -> Integer,
         name -> Varchar,
         content -> Text,
+        tag -> Text,
         date -> Nullable<Datetime>,
     }
 }

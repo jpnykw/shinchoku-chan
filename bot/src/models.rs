@@ -8,6 +8,7 @@ pub struct Post {
     pub id: i32,
     pub name: String,
     pub content: String,
+    pub tag: String,
     pub date: Option<NaiveDateTime>,
 }
 
@@ -16,6 +17,7 @@ pub struct Post {
 pub struct NewPost<'a> {
     pub name: &'a str,
     pub content: &'a str,
+    pub tag: &'a str,
     pub date: NaiveDateTime,
 }
 
