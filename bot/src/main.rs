@@ -38,8 +38,8 @@ impl EventHandler for Handler {
                 "ping" => {
                     ping(&ctx, &msg);
                 },
-                "記録" | "感想" | "進捗" | "今日の感想" => {
-                    post(&ctx, &msg, args);
+                "記録" | "感想" | "進捗" => {
+                    post(&ctx, &msg, command, args);
                 },
                 "表示" => {
                     show(&ctx, &msg);

@@ -9,7 +9,7 @@ use serenity::{
 };
 
 // DB に接続して投稿された内容を記録する
-pub fn post(ctx: &Context, msg: &Message, args: Vec<&str>) {
+pub fn post(ctx: &Context, msg: &Message, tag: &str, args: Vec<&str>) {
     match msg.channel_id.say(ctx, "ちょっとだけ待ってね…") {
         Err(e) => {
             dbg!(e);
@@ -21,7 +21,7 @@ pub fn post(ctx: &Context, msg: &Message, args: Vec<&str>) {
             let name = &msg.author.name;
             let content = args.join(" ");
 
-            create_post(&connection, name, &content);
+            create_post(&connection, name, &content, tag);
             match msg.channel_id.say(ctx, "ちゃんと記録したよ！") {
                 Err(e) => { dbg!(e); },
                 Ok(_) => {},

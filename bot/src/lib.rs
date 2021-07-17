@@ -18,12 +18,17 @@ pub fn establish_connection() -> MysqlConnection {
 }
 
 // DBの posts テーブルにデータを書き込むための処理
-pub fn create_post(conn: &MysqlConnection, name: &str, content: &str) -> Post {
+pub fn create_post(conn: &MysqlConnection, name: &str, content: &str, tag: &str) -> Post {
     use schema::posts::dsl::{id, posts};
     use chrono::Utc;
 
     let date = Utc::now().naive_utc();
-    let new_post = NewPost { name, content, date };
+    let new_post = NewPost {
+        name,
+        content,
+        tag,
+        date
+    };
 
     diesel::insert_into(posts)
         .values(&new_post)
@@ -47,7 +52,15 @@ pub fn create_commit(
     use chrono::Utc;
 
     let date = Utc::now().naive_utc();
-    let new_commit = NewCommit { user, additions, deletions, hash, repo_owner, repo_name, date };
+    let new_commit = NewCommit {
+        user,
+        additions,
+        deletions,
+        hash,
+        repo_owner,
+        repo_name,
+        date
+    };
 
     diesel::insert_into(commits)
         .values(&new_commit)
