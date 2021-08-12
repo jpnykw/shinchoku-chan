@@ -33,6 +33,10 @@ impl EventHandler for Handler {
             let mut tokens = tokens.split_whitespace();
             let command = tokens.next().expect("Unwrap command name.");
             let args = tokens.collect::<Vec<&str>>();
+            println!("\n* executed info:");
+            println!("  - command: `{}`", command);
+            println!("  - args: `{:?}`", args);
+            println!("  - by: `{}`", author.name);
 
             match command {
                 "ping" => {
@@ -170,7 +174,7 @@ impl EventHandler for Handler {
     }
 
     fn ready(&self, _: Context, ready: Ready) {
-        println!("Ready setup {}!", ready.user.name);
+        println!("\nReboot {}!", ready.user.name);
     }
 }
 
